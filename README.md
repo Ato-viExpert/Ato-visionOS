@@ -27,7 +27,7 @@
 <br>
 
 ## 🌟 **Solution Concept**
-가상환경의 사물에서 원자를 가져온 후, 직접 원자를 조립하고 분해해보며 분자구조에 대한 흥미를 느낄 수 있도록 한다.
+> 가상환경의 사물에서 원자를 가져온 후, 직접 원자를 조립하고 분해해보며 분자구조에 대한 흥미를 느낄 수 있도록 한다.
 <br>
 
 ## **🧑‍💻 Dev Member**
@@ -91,13 +91,27 @@
 6. pull 받아서 다음 이슈 진행
 
 
-## **📖 Development Environment**
+## 🔎 기술 스택
+### Envrionment
+<div align="left">
+<img src="https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white" />
+<img src="https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white" />
+<img src="https://img.shields.io/badge/SPM-FA7343?style=for-the-badge&logo=swift&logoColor=white" />
+</div>
 
- - 🧱 framework
+### Development
+<div align="left">
+<img src="https://img.shields.io/badge/Xcode-007ACC?style=for-the-badge&logo=Xcode&logoColor=white" />
+<img src="https://img.shields.io/badge/SwiftUI-42A5F5?style=for-the-badge&logo=swift&logoColor=white" />
+<img src="https://img.shields.io/badge/Combine-FF2D55?style=for-the-badge&logo=apple&logoColor=white" />
+</div>
 
-프레임워크 | 사용 이유 
-:---------:|:----------:
- SwifUI | UI 구현
+### Communication
+<div align="left">
+<img src="https://img.shields.io/badge/Miro-FFFC00.svg?style=for-the-badge&logo=Miro&logoColor=050038" />
+<img src="https://img.shields.io/badge/Notion-white.svg?style=for-the-badge&logo=Notion&logoColor=000000" />
+<img src="https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white" />
+</div>
 
 <br>
 
