@@ -30,6 +30,12 @@
 > 가상환경의 사물에서 원자를 가져온 후, 직접 원자를 조립하고 분해해보며 분자구조에 대한 흥미를 느낄 수 있도록 한다.
 <br>
 
+## **🧑‍💻 PM**
+| Erin<br/>([@Jeongin-c](https://github.com/Jeongin-c)) |
+| :---: |
+| <img width="400" alt="IMG_6676 2" src="https://avatars.githubusercontent.com/u/205946876?v=4"> |
+<br>
+
 ## **🧑‍💻 Dev Member**
 | Tether<br/>([@Bongjoon Cha](https://github.com/bongjooncha)) | Mary<br/>([@Ellyhs](https://github.com/Ellyhs)) | My<br/>([@wjdalswl](https://github.com/wjdalswl)) |
 | :---: | :---: | :---: |
