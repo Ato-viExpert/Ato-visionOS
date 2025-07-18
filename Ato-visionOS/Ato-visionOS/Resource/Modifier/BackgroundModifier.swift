@@ -32,6 +32,8 @@ struct BG: ViewModifier {
 // MARK: - extension
 
 extension View {
+    /// bg 모디파이어
+    /// - Returns: 회색 기본 백그라운드 뷰 반환
     func bg() -> some View {
         self.modifier(BG())
     }

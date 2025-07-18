@@ -22,11 +22,10 @@ enum ToolType: CaseIterable, Equatable {
         }
     }
     
-    // TODO: - ImageResource 변경 필요
     var icon: ImageResource {
         switch self {
         case .move:
-            return .icObserve
+            return .icMove
         case .magnify:
             return .icObserve
         case .bond:
