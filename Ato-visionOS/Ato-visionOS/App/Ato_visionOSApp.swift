@@ -14,9 +14,10 @@ struct Ato_visionOSApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+                   ContentView()
                 .environment(appModel)
-        }
+               }
+               .windowStyle(.plain)
 
         ImmersiveSpace(id: appModel.immersiveSpaceID) {
             ImmersiveView()
