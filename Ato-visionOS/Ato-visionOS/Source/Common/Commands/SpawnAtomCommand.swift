@@ -15,14 +15,17 @@ final class SpawnAtomCommand: Command {
     // MARK: - Properties
     
     private let atomType: AtomType
+    private var spawnedAtom: LabAtom?
     private var spawnedEntity: Entity?
+    private let atomManager: AtomManager
 
     // MARK: - Init
     
     /// SpawnAtomCommand 초기화
     /// - Parameter atomType: 생성할 LabAtom의 원소 타입
-    init(atomType: AtomType) {
+    init(atomType: AtomType, atomManager: AtomManager) {
         self.atomType = atomType
+        self.atomManager = atomManager
     }
 
     // MARK: - Methods
@@ -32,16 +35,20 @@ final class SpawnAtomCommand: Command {
     /// - Parameter content: RealityView에 배치된 RealityViewContent
     /// - Returns: 생성된 LabAtom 엔티티를 포함한 CommandResult
     func execute(in content: RealityViewContent) async throws -> CommandResult {
-        if let existing = spawnedEntity {
-            content.add(existing)
-            return .entity(existing)
+        if let entity = spawnedEntity, let atom = spawnedAtom {
+            content.add(entity)
+            atomManager.register(atom)
+            return .entity(entity)
         }
-
+        
         let atom = LabAtom(atomicNumber: atomType.atomicNumber)
         let entity = try await atom.loadEntity()
-        spawnedEntity = entity
 
+        spawnedAtom = atom
+        spawnedEntity = entity
         content.add(entity)
+        atomManager.register(atom)
+        
         return .entity(entity)
     }
 
@@ -49,8 +56,9 @@ final class SpawnAtomCommand: Command {
     /// - Parameter content: RealityView에 배치된 RealityViewContent
     /// - Returns: 제거된 LabAtom 엔티티를 포함한 CommandResult
     func undo(in content: RealityViewContent) async throws -> CommandResult {
-        guard let entity = spawnedEntity else { return .none }
+        guard let entity = spawnedEntity, let atom = spawnedAtom else { return .none }
         await entity.removeFromParent()
+        atomManager.unregister(atom)
         return .entity(entity)
     }
 }

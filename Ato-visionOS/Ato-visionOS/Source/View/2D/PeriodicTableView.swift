@@ -110,7 +110,7 @@ struct PeriodicTableView: View {
     /// - Parameter type: 생성할 원자의 AtomType (예: .hydrogen, .carbon 등)
     private func spawnAtom(of type: AtomType) {
         guard let content = appModel.realityContent else { return }
-        let command = SpawnAtomCommand(atomType: type)
+        let command = SpawnAtomCommand(atomType: type, atomManager: appModel.atomManager)
         Task {
             let _ = await appModel.commandManager.execute(command, in: content)
         }

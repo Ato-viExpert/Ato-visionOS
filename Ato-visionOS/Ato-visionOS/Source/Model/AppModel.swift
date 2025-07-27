@@ -22,6 +22,8 @@ class AppModel {
     var immersiveSpaceState = ImmersiveSpaceState.closed
     var selectedTool: ToolType = .move
     let commandManager = CommandManager()
+    var atomManager = AtomManager()
+    var moleculeManager = MoleculeManager()
     var realityContent: RealityViewContent? = nil
 
 }
