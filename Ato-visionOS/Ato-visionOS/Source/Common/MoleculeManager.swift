@@ -12,6 +12,7 @@ class MoleculeManager {
     // MARK: - Properties
     
     private(set) var molecules: [LabMolecule] = []
+    
     var allMolecules: [LabMolecule] {
         return molecules
     }
@@ -26,9 +27,18 @@ class MoleculeManager {
         return molecules.first(where: { $0.atoms.contains(where: { $0.atomId == atom.atomId }) })
     }
 
-    
     func findMoleculeByUUID(_ uuid: UUID) -> LabMolecule? {
         return molecules.first(where: { $0.moleculeId == uuid })
+    }
+    
+    func register(_ molecule: LabMolecule) {
+        if !molecules.contains(where: { $0.moleculeId == molecule.moleculeId }) {
+            molecules.append(molecule)
+        }
+    }
+    
+    func unregister(_ molecule: LabMolecule) {
+        molecules.removeAll { $0.moleculeId == molecule.moleculeId }
     }
     
     func createBondedAtoms(atomA: LabAtom, atomB: LabAtom) -> LabMolecule? {
