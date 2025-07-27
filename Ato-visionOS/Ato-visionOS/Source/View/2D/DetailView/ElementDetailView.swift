@@ -34,11 +34,6 @@ struct ElementDetailView: View {
                 }
             }
             
-//            .pickerStyle(.menu) // 또는 .wheel
-//            .padding(.bottom, 10)
-            
-            Divider()
-            
             // 상세 내용 표시
             
 //            Group {

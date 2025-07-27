@@ -14,13 +14,38 @@ struct MoleculeDetailView: View {
     let height: CGFloat
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text(molecule.name)
-                .font(.title.bold())
-            Text("분자식: \(molecule.symbol)")
-                .font(.subheadline)
-            Text(molecule.description)
+        VStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 30) {
+                Text("\(molecule.symbol)(\(molecule.name))")
+                    .font(Font.custom("SF Pro Display", size: width * 0.08)
+                        .weight(.bold)
+                    )
+                    .multilineTextAlignment(.leading)
+                    .foregroundColor(.white)
+                
+                Divider()
+                    .background(.white.opacity(0.4))
+                    .frame(width: width * 0.66)
+            }
+            .frame(height: height * 0.1)
+            
+            VStack(alignment: .center) {
+            
+                Text("분자식: \(molecule.symbol)")
+                    .font(.subheadline)
+                
+            }
+            VStack(alignment: .leading) {
+                Text(molecule.description)
+                    .font(Font.custom("SF Pro Display", size: width * 0.04))
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .frame(minHeight: height * 0.3)
+                Spacer()
+            }
         }
-        .padding()
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(.top, height * 0.05)
+        .padding(.horizontal, width * 0.12)
     }
 }
