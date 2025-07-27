@@ -1,8 +1,8 @@
 import SwiftUI
 
-// MARK: - WarningWindow
+// MARK: - WarningView
 /// 경고창 뷰
-struct WarningWindow: View {
+struct WarningView: View {
     @Binding var isPresented: Bool
     
     var body: some View {
