@@ -7,18 +7,19 @@
 
 import SwiftUI
 
-class MoleculeManager {
+final class MoleculeManager {
     
     // MARK: - Properties
     
     private(set) var molecules: [LabMolecule] = []
     
-    var allMolecules: [LabMolecule] {
+    // MARK: - Public Methods
+    
+    /// 전체 분자 반환
+    /// - Returns: [LabMolecule]
+    func allMoleculesList() -> [LabMolecule] {
         return molecules
     }
-    
-    // MARK: - Methods
-
 
     /// 주어진 원자를 포함하는 분자를 찾아 반환합니다.
     /// - Parameter atom: 해당 atom을 포함한 분자를 찾습니다.
@@ -26,28 +27,35 @@ class MoleculeManager {
     public func findMolecule(containing atom: LabAtom) -> LabMolecule? {
         return molecules.first(where: { $0.atoms.contains(where: { $0.atomId == atom.atomId }) })
     }
-
+    
+    /// UUID에 해당하는 분자를 찾아 반환합니다.
+    ///  - Parameter uuid: 찾고자 하는 LabMolecule의 고유 식별자
+    ///  - Returns: 해당 UUID를 가진 LabMolecule, 없으면 nil
     func findMoleculeByUUID(_ uuid: UUID) -> LabMolecule? {
         return molecules.first(where: { $0.moleculeId == uuid })
     }
     
+    /// 새로운 분자를 등록합니다.
+    ///  - Parameter molecule: 등록할 LabMolecule
     func register(_ molecule: LabMolecule) {
         if !molecules.contains(where: { $0.moleculeId == molecule.moleculeId }) {
             molecules.append(molecule)
         }
     }
     
+    /// 분자 등록을 해제합니다.
+    /// - Parameter molecule: 제거할 LabMolecule
     func unregister(_ molecule: LabMolecule) {
         molecules.removeAll { $0.moleculeId == molecule.moleculeId }
     }
     
+    /// 두 원자를 결합하여 새로운 분자를 생성합니다.
+    ///  - Parameters:
+    ///    - atomA: 결합 대상 첫 번째 원자
+    ///    - atomB: 결합 대상 두 번째 원자
+    ///  - Returns: 결합된 결과로 생성된 LabMolecule, 결합 실패 시 nil
     func createBondedAtoms(atomA: LabAtom, atomB: LabAtom) -> LabMolecule? {
-        print("🔍 [createBondedAtoms] atomA.maxElectronCount: \(atomA.maxElectronCount), atomB.maxElectronCount: \(atomB.maxElectronCount)")
-        print("🔍 [createBondedAtoms] atomA.sharedElectrons: \(atomA.sharedElectrons), unpaired: \(atomA.unpairedElectrons)")
-          print("🔍 [createBondedAtoms] atomB.sharedElectrons: \(atomB.sharedElectrons), unpaired: \(atomB.unpairedElectrons)")
-        
         let bondOrder = predictBondOrder(atomA: atomA, atomB: atomB)
-        print("📐 예측된 결합 차수: \(bondOrder)")
         guard bondOrder > 0 else {
             wrongChoice()
             return nil
@@ -107,9 +115,11 @@ class MoleculeManager {
         return nil
     }
     
-    // 원자 결합 예측
-    /// input -> 두개의 원자
-    /// output -> 두개의 원자가 결합 할 경우 어떤 결합을 하게 되는지(불가일 경우 0)
+    /// 원자 결합 예측
+    /// - Parameters:
+    ///   - atomA: 결합할 LabAtom 1
+    ///   - atomB: 결합할 LabAtom 2
+    /// - Returns: 두개의 원자가 결합 할 경우 몇 중 결합을 하게 되는지(불가일 경우 0)
     func predictBondOrder(atomA: LabAtom, atomB: LabAtom) -> Int {
         // 조건 1: 남은 홑전자가 있어야 함
         guard atomA.unpairedElectrons > 0, atomB.unpairedElectrons > 0 else {
@@ -122,7 +132,6 @@ class MoleculeManager {
             return 0
         }
         
-        // 조건 3: 필요한 전자 수 계산
         let needA = atomA.maxElectronCount - atomA.currentElectronCount
         let needB = atomB.maxElectronCount - atomB.currentElectronCount
 
@@ -132,6 +141,10 @@ class MoleculeManager {
         return min(maxPossibleBond, requiredBond)
     }
 
+    
+    // MARK: - Private Methods
+    
+    
     /// 원자의 결합 상태 변화(결합, 결합 전자 수, 홀전자 수 변화)
     /// - Parameters:
     ///   - atomA: 원자 A

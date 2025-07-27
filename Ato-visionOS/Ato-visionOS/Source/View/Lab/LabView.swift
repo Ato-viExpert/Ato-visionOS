@@ -114,7 +114,7 @@ struct LabView: View {
                         Task {
                             await appModel.commandManager.execute(command, in: content)
                         }
-                    } else if let molecule = appModel.moleculeManager.allMolecules.first(where: { $0.entity?.name == entity.name }) {
+                    } else if let molecule = appModel.moleculeManager.allMoleculesList().first(where: { $0.entity?.name == entity.name }) {
                         let command = DeleteCommand(
                             target: .molecule(molecule),
                             atomManager: appModel.atomManager,
@@ -130,7 +130,7 @@ struct LabView: View {
             }
     }
     func toolDidChange(to newTool: ToolType) {
-        for molecule in appModel.moleculeManager.allMolecules {
+        for molecule in appModel.moleculeManager.allMoleculesList() {
             molecule.setInteractionMode(for: newTool)
         }
     }

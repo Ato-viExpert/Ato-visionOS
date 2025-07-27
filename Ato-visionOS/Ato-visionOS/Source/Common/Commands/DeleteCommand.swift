@@ -26,7 +26,12 @@ final class DeleteCommand: Command {
     }
     
     // MARK: - Init
-
+    
+    /// DeleteCommand 초기화
+    /// - Parameters:
+    ///   - target: 삭제 대상 (원자 또는 분자)
+    ///   - atomManager: 원자 등록/해제 관리를 위한 매니저
+    ///   - moleculeManager: 분자 등록/해제 관리를 위한 매니저
     init(target: TargetType, atomManager: AtomManager, moleculeManager: MoleculeManager) {
         self.targetType = target
         self.atomManager = atomManager
@@ -42,11 +47,11 @@ final class DeleteCommand: Command {
     
     // MARK: - Methods
 
+    /// 선택된 엔티티를 씬에서 제거하고 관련 매니저에서 등록 해제합니다.
+    /// - Parameter content: RealityView의 컨텍스트
+    /// - Returns: 제거된 엔티티 리스트
     func execute(in content: RealityViewContent) async throws -> CommandResult {
-        guard let parent = await targetEntity.parent else {
-            print("⚠️ 삭제할 엔티티의 부모가 없습니다.")
-            return .none
-        }
+        guard let parent = await targetEntity.parent else { return .none }
 
         originalParent = parent
         originalPosition = await targetEntity.position(relativeTo: nil)
@@ -63,11 +68,11 @@ final class DeleteCommand: Command {
         return .entities([targetEntity])
     }
 
+    /// 삭제를 취소하고 원래 위치에 엔티티를 복원합니다.
+    ///  - Parameter content: RealityView의 컨텍스트
+    ///  - Returns: 복원된 엔티티 리스트
     func undo(in content: RealityViewContent) async throws -> CommandResult {
-        guard let position = originalPosition else {
-            print("⚠️ 복원 불가 - 원래 위치 정보 없음")
-            return .none
-        }
+        guard let position = originalPosition else { return .none }
 
         await MainActor.run {
             content.add(targetEntity)

@@ -12,7 +12,7 @@ final class AtomManager {
     
     private var atoms: [UUID: LabAtom] = [:]
     
-    // MARK: - Methods
+    // MARK: - Public Methods
     
     /// atoms(실험실에 나와있는 원자리스트)에서 원자 등록
     /// - Parameter atom: LabAtom

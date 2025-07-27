@@ -8,7 +8,7 @@
 import RealityKit
 
 enum BondGeometry {
-        case linear // 2 bonds, 180도
+        case linear
         case bent_3
         case bent_4
         case trigonalPlanar

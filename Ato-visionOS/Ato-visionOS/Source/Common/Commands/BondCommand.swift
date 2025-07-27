@@ -9,6 +9,7 @@ import SwiftUI
 import RealityKit
 import RealityFoundation
 
+/// `BondCommand`는 두 원자 간의 결합을 수행하고, 이를 Undo 가능한 명령으로 관리합니다.
 final class BondCommand: Command {
     
     // MARK: - Properties
@@ -21,22 +22,28 @@ final class BondCommand: Command {
     
     // MARK: - Init
     
-    init(atomA: LabAtom, atomB: LabAtom, bondOrder: Int, moleculeManager: MoleculeManager) {
+    /// BondCommand 초기화
+    /// 두 원자(atomA, atomB) 간의 결합을 생성하고, 분자 관리자를 통해 적절한 결합 차수(bondOrder)를 계산합니다.
+    /// - Parameters:
+    ///   - atomA: 결합의 기준이 되는 첫 번째 원자
+    ///   - atomB: 결합할 두 번째 원자
+    ///   - moleculeManager: 결합 로직 및 분자 생성을 담당하는 분자 관리자
+    init(atomA: LabAtom, atomB: LabAtom, moleculeManager: MoleculeManager) {
         self.atomA = atomA
         self.atomB = atomB
-        self.bondOrder = bondOrder
+        self.bondOrder = moleculeManager.predictBondOrder(atomA: atomA, atomB: atomB)
         self.moleculeManager = moleculeManager
     }
     
     // MARK: - Public Methods
     
+    /// 원자 간의 결합을 실행합니다.
+    /// - Parameter content: 엔티티가 추가될 RealityViewContent 컨텍스트
+    /// - Returns: 실행 결과로 생성된 Entity 배열을 포함하는 `CommandResult`
+    /// - Throws: 오류 발생 시 throw됩니다.
     func execute(in content: RealityViewContent) async throws -> CommandResult {
-        print("✅함수 시작")
-        print("🔍 atomA.sharedElectrons: \(atomA.sharedElectrons), unpaired: \(atomA.unpairedElectrons)")
-        print("🔍 atomB.sharedElectrons: \(atomB.sharedElectrons), unpaired: \(atomB.unpairedElectrons)")
-        
         let molecule = moleculeManager.createBondedAtoms(atomA: atomA, atomB: atomB)
-        print("✅ Bond created: Molecule ID = \(String(describing: molecule?.moleculeId))")
+        
         if let moleculeEntity = molecule?.entity {
             let bounds = await moleculeEntity.visualBounds(relativeTo: nil)
             let shape = await ShapeResource.generateBox(size: bounds.extents)
@@ -46,22 +53,19 @@ final class BondCommand: Command {
             content.add(moleculeEntity)
         }
         
-        guard let _ = atomA.entity, let _ = atomB.entity else {
-            print("❌ 엔티티를 찾을 수 없습니다.")
-            return .none
-        }
-        
+        guard let _ = atomA.entity, let _ = atomB.entity else { return .none }
+
         if let moleculeEntity = molecule?.entity {
             content.add(moleculeEntity)
         }
-        // 위치 백업
-        //        if let molecule = molecule {
-        //            for atom in molecule.atoms {
-        //                if let entity = atom.entity {
-        //                    originalPositions[atom.atomId] = entity.position(relativeTo: nil)
-        //                }
-        //            }
-        //        }
+        
+        if let molecule = molecule {
+            for atom in molecule.atoms {
+                if let entity = atom.entity {
+                    originalPositions[atom.atomId] = await entity.position(relativeTo: nil)
+                }
+            }
+        }
         
         var visited = Set<UUID>()
         assignBondedAtomPositions(root: atomA, origin: SIMD3<Float>(0, 0, 0), visited: &visited)
@@ -72,15 +76,28 @@ final class BondCommand: Command {
         return .entities(placedEntities)
     }
     
+    /// 실행된 결합을 취소(Undo)합니다.
+    /// - Parameter content: RealityViewContent에 복원할 컨텍스트
+    /// - Returns: 복원된 Entity 배열을 포함하는 `CommandResult`
+    /// - Throws: 오류 발생 시 throw됩니다.
     func undo(in content: RealityViewContent) async throws -> CommandResult {
         atomA.removeBond(Bond(atomUUID: atomB.atomId, bondType: bondOrder))
         atomB.removeBond(Bond(atomUUID: atomA.atomId, bondType: bondOrder))
         
-        // TODO: - 관련 로직수정 필요, 위치 복원 현재 안됨
+        var restoredEntities: [Entity] = []
+        
         if let molecule = moleculeManager.findMolecule(containing: atomA) {
             for atom in molecule.atoms {
-                if let original = originalPositions[atom.atomId] {
-                    atom.setPosition(original)
+                if let entity = atom.entity,
+                   let original = originalPositions[atom.atomId] {
+                    
+                    await MainActor.run {
+                        content.add(entity)
+                        entity.setPosition(original, relativeTo: nil)
+                    }
+                    
+                    _ = await entity.position(relativeTo: nil)
+                    restoredEntities.append(entity)
                 }
             }
         }
@@ -90,12 +107,17 @@ final class BondCommand: Command {
             await moleculeEntity.removeFromParent()
         }
         
-        let affectedEntities = [atomA, atomB].compactMap { $0.entity }
-        return .entities(affectedEntities)
+        return .entities(restoredEntities)
     }
+
     
     // MARK: - Private Methods
     
+    /// 결합된 원자들의 위치를 재귀적으로 배치합니다.
+    /// - Parameters:
+    ///   - root: 기준이 되는 원자
+    ///   - origin: 기준 위치
+    ///   - visited: 이미 배치한 원자의 ID 목록 (무한 재귀 방지)
     private func assignBondedAtomPositions(
         root: LabAtom,
         origin: SIMD3<Float>,
