@@ -61,7 +61,7 @@ fileprivate struct ToolbarIconButton: View {
     
     private func handleButtonTap() {
         if tool.group == .selectable {
-            appModel.selectedTool = tool
+            appModel.toolChangeRequest = tool
         } else {
             guard let content = appModel.realityContent else { return }
             

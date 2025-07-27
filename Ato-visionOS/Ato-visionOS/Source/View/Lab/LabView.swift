@@ -14,9 +14,9 @@ struct LabView: View {
     // MARK: - Properties
     
     @Environment(AppModel.self) private var appModel
-    @State private var selectedAtoms: [LabAtom] = []    // ✅ LabView 내부에서만 사용
+    @State private var currentMagnifiedAtom: LabAtom? = nil
+    @State private var selectedAtoms: [LabAtom] = []
     @State private var initialPosition: SIMD3<Float>? = nil
-    
     
     // MARK: - Body
     
@@ -49,8 +49,9 @@ struct LabView: View {
                 entity.components.set(physicsBody)
             }
         }
-        .onChange(of: appModel.selectedTool) { oldValue, newValue in
-            toolDidChange(to: newValue)
+        .onChange(of: appModel.toolChangeRequest) { _, newValue in
+            guard let newTool = newValue else { return }
+            toolDidChange(to: newTool)
         }
         .gesture(appModel.selectedTool == .move ? dragGesture : nil)
         .gesture(tapGesture)
@@ -81,6 +82,28 @@ struct LabView: View {
                 let entity = value.entity
                 
                 switch appModel.selectedTool {
+                case .magnify:
+                    if let tapped = appModel.atomManager.findAtom(by: entity.name) {
+                        if tapped.atomId != currentMagnifiedAtom?.atomId {
+                            let previous = currentMagnifiedAtom
+                            currentMagnifiedAtom = tapped
+                            let command = MagnifyAtomCommand(previous: previous, new: tapped)
+                            
+                            
+                            
+                            Task {
+                                await appModel.commandManager.execute(command, in: content)
+                            }
+                        } else {
+                            let command = MagnifyAtomCommand(previous: currentMagnifiedAtom, new: nil)
+                            currentMagnifiedAtom = nil
+                            
+                            
+                            Task {
+                                await appModel.commandManager.execute(command, in: content)
+                            }
+                        }
+                    }
                 case .bond:
                     if let atom = appModel.atomManager.findAtom(by: entity.name) {
                         if !selectedAtoms.contains(where: { $0.atomId == atom.atomId }) {
@@ -129,9 +152,20 @@ struct LabView: View {
                 }
             }
     }
+    
     func toolDidChange(to newTool: ToolType) {
-        for molecule in appModel.moleculeManager.allMoleculesList() {
-            molecule.setInteractionMode(for: newTool)
+        Task {
+            if let magnified = currentMagnifiedAtom {
+                let cancelCommand = MagnifyAtomCommand(previous: magnified, new: nil)
+                await appModel.commandManager.execute(cancelCommand, in: appModel.realityContent!)
+                currentMagnifiedAtom = nil
+            }
+            
+            let changeCommand = ChangeToolCommand(from: appModel.selectedTool, to: newTool, appModel: appModel)
+            await appModel.commandManager.execute(changeCommand, in: appModel.realityContent!)
+            appModel.selectedTool = newTool
+            
+            appModel.toolChangeRequest = nil
         }
     }
 }

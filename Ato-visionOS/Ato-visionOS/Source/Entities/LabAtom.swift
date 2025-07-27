@@ -35,6 +35,7 @@ class LabAtom: Atom {
     private let emissiveColor: UIColor /// 발광 색상
     private let modelScale: Float /// 모델 크기
     private(set) var entity: Entity?
+    private(set) var magnifiedEntity: Entity?
     private(set) var position: SIMD3<Float> = .zero
     
     // MARK: - Init
@@ -117,6 +118,7 @@ class LabAtom: Atom {
     }
 }
 
+
 extension LabAtom {
     // MARK: - 3D 원자 로드 Methods
     
@@ -139,5 +141,112 @@ extension LabAtom {
         }
         self.entity = root
         return root
+    }
+}
+// MARK: - 원자 상세보기 (확대) 관련
+
+extension LabAtom {
+    
+    /// LabAtom의 물리적 특성과 전자 구조를 기반으로 확대용 Entity를 구성합니다.
+    /// - Returns: 확대 표현용 원자 Entity
+   @MainActor
+    func loadMagnificationEntity() async -> Entity {
+        let root =  Entity()
+        root.name = "magnified_\(atomId.uuidString)"
+        
+        let nucleus = generateNucleus()
+        root.addChild(nucleus)
+        
+        for (index, electronCount) in electronShells.enumerated() {
+            if electronCount <= 0 { continue }
+            
+            if let ring = await generateRing(index: index, electronCount: electronCount) {
+                startRingRotation(ring: ring, speed: 0.5 + 0.2 * Float(index))
+                nucleus.addChild(ring)
+            }
+        }
+        
+        let bounds =  root.visualBounds(relativeTo: nil)
+        let shape =  ShapeResource.generateBox(size: bounds.extents)
+        root.components.set(CollisionComponent(shapes: [shape]))
+        root.components.set(InputTargetComponent())
+        magnifiedEntity = root
+        return root
+    }
+    
+    /// 원자핵 생성 (회전 중심)
+    /// - Returns: 원자핵
+    private func generateNucleus() -> Entity {
+        let mesh = MeshResource.generateSphere(radius: 0.03)
+        let color = diffuseColor.withAlphaComponent(0.7)
+        let material = SimpleMaterial(color: color, isMetallic: true)
+        let nucleus = ModelEntity(mesh: mesh, materials: [material])
+        nucleus.name = "nucleus"
+        return nucleus
+    }
+
+    /// 궤도 링 + 전자 생성
+    /// - Parameters:
+    ///   - index: 몇번째 링인지 Int 값
+    ///   - electronCount: 링에 포함되야하는 전자 몇개인지 Int 값
+    /// - Returns: 전자를 포함한 전자 궤도 링 반환
+    private func generateRing(index: Int, electronCount: Int) async -> Entity? {
+        let assetName = "ring\(index + 1)"
+        do {
+            let ring = try await Entity(named: assetName, in: realityKitContentBundle)
+            await MainActor.run {
+                ring.name = assetName
+                ring.position = .zero
+                ring.scale = [1, 1, 1]
+                
+                let bounds = ring.visualBounds(relativeTo: nil)
+                let radius = bounds.extents.x / 2
+                
+                for i in 0..<electronCount {
+                    let angle = Float(i) * (2 * .pi / Float(electronCount))
+                    let x = cos(angle) * radius
+                    let z = sin(angle) * radius
+                    
+                    let electronMesh = MeshResource.generateSphere(radius: 0.005)
+                    let electronMaterial = SimpleMaterial(color: .white.withAlphaComponent(0.5), isMetallic: false)
+                    let electron = ModelEntity(mesh: electronMesh, materials: [electronMaterial])
+                    electron.position = [x, 0, z]
+                    
+                    ring.addChild(electron)
+                }
+            }
+            return ring
+        } catch {
+            print("⚠️ Failed to load ring asset: \(error)")
+            return nil
+        }
+    }
+
+    /// 링 회전 시작 (비동기 Task)
+    /// - Parameters:
+    ///   - ring: 회전 시킬 링
+    ///   - speed: 회전 속도
+    private func startRingRotation(ring: Entity, speed: Float) {
+        Task.detached {
+            var time: Float = 0
+            while true {
+                time += 0.016
+                
+                let axis = normalize(SIMD3<Float>(
+                    x: sin(time * 0.2),
+                    y: cos(time * 0.3),
+                    z: sin(time * 0.1 + .pi / 4)
+                ))
+                
+                let angle = speed * 0.016
+                let deltaRotation = simd_quatf(angle: angle, axis: axis)
+                
+                await MainActor.run {
+                    ring.transform.rotation = deltaRotation * ring.transform.rotation
+                }
+                
+                try? await Task.sleep(nanoseconds: 16_000_000)
+            }
+        }
     }
 }
