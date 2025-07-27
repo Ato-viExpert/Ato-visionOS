@@ -14,9 +14,15 @@ struct LabView: View {
     // MARK: - Properties
     
     @Environment(AppModel.self) private var appModel
-    @State private var currentMagnifiedAtom: LabAtom? = nil
-    @State private var selectedAtoms: [LabAtom] = []
-    @State private var initialPosition: SIMD3<Float>? = nil
+    @State private var viewModel: LabViewModel
+    
+    // MARK: - Init
+    
+    /// LabView
+    /// - Parameter viewModel: LabViewModel
+    init(viewModel: LabViewModel) {
+        self.viewModel = viewModel
+    }
     
     // MARK: - Body
     
@@ -24,153 +30,155 @@ struct LabView: View {
         RealityView { content in
             appModel.realityContent = content
         } update: { content in
-            for entity in content.entities {
-                // 1. 충돌 감지를 위한 CollisionComponent 추가 (없을 때만)
-                if entity.components[CollisionComponent.self] == nil {
-                    let shape = ShapeResource.generateSphere(radius: 0.05)
-                    let collision = CollisionComponent(shapes: [shape])
-                    entity.components.set(collision)
-                }
-                
-                // 2. 반발력 있는 PhysicsMaterial 설정
-                let material = PhysicsMaterialResource.generate(
-                    staticFriction: 0.0,
-                    dynamicFriction: 0.0,
-                    restitution: 0.95 // 거의 완전 탄성 충돌
-                )
-                
-                // 3. 중력은 무시하고 충돌만 적용되는 kinematic 설정
-                let physicsBody = PhysicsBodyComponent(
-                    massProperties: .init(mass: 0.005),
-                    material: material,
-                    mode: .kinematic  // 중력 무시 + 충돌 반응 가능
-                )
-                
-                entity.components.set(physicsBody)
-            }
+            setupEntities(in: content)
         }
         .onChange(of: appModel.toolChangeRequest) { _, newValue in
             guard let newTool = newValue else { return }
-            toolDidChange(to: newTool)
+            handleToolChange(to: newTool)
         }
         .gesture(appModel.selectedTool == .move ? dragGesture : nil)
         .gesture(tapGesture)
     }
     
-    var dragGesture: some Gesture {
+    // MARK: - Entity Setup
+    
+    /// 초기 RealityViewContent 내의 모든 엔티티에 충돌 감지와 물리 속성을 설정합니다.
+    /// - Parameter content: RealityKit 뷰의 콘텐츠 엔티티 컨테이너입니다.
+    private func setupEntities(in content: RealityViewContent) {
+        for entity in content.entities {
+            if entity.components[CollisionComponent.self] == nil {
+                let shape = ShapeResource.generateSphere(radius: 0.05)
+                entity.components.set(CollisionComponent(shapes: [shape]))
+            }
+            let material = PhysicsMaterialResource.generate(staticFriction: 0.0, dynamicFriction: 0.0, restitution: 0.95)
+            let physicsBody = PhysicsBodyComponent(massProperties: .init(mass: 0.005), material: material, mode: .kinematic)
+            entity.components.set(physicsBody)
+        }
+    }
+    
+    // MARK: - Gestures
+    
+    /// Move 툴이 선택된 경우 엔티티를 드래그로 이동시킬 수 있는 제스처입니다.
+    private var dragGesture: some Gesture {
         DragGesture()
             .targetedToAnyEntity()
             .onChanged { value in
-                let entity = value.entity
-                if initialPosition == nil {
-                    initialPosition = entity.position
+                if viewModel.initialPosition == nil {
+                    viewModel.initialPosition = value.entity.position
                 }
                 let movement = value.convert(value.translation3D, from: .global, to: .scene)
-                entity.position = (initialPosition ?? .zero) + movement.grounded
+                value.entity.position = (viewModel.initialPosition ?? .zero) + movement.grounded
             }
             .onEnded { _ in
-                initialPosition = nil
+                viewModel.initialPosition = nil
             }
     }
     
-    var tapGesture: some Gesture {
+    /// RealityKit 엔티티를 탭하여 선택 동작을 수행하는 제스처입니다.
+    /// 선택된 툴 타입에 따라 다른 동작이 실행됩니다.
+    private var tapGesture: some Gesture {
         TapGesture()
             .targetedToAnyEntity()
             .onEnded { value in
-                guard let content = appModel.realityContent else { return }
-                
-                let entity = value.entity
-                
-                switch appModel.selectedTool {
-                case .magnify:
-                    if let tapped = appModel.atomManager.findAtom(by: entity.name) {
-                        if tapped.atomId != currentMagnifiedAtom?.atomId {
-                            let previous = currentMagnifiedAtom
-                            currentMagnifiedAtom = tapped
-                            let command = MagnifyAtomCommand(previous: previous, new: tapped)
-                            
-                            
-                            
-                            Task {
-                                await appModel.commandManager.execute(command, in: content)
-                            }
-                        } else {
-                            let command = MagnifyAtomCommand(previous: currentMagnifiedAtom, new: nil)
-                            currentMagnifiedAtom = nil
-                            
-                            
-                            Task {
-                                await appModel.commandManager.execute(command, in: content)
-                            }
-                        }
-                    }
-                case .bond:
-                    if let atom = appModel.atomManager.findAtom(by: entity.name) {
-                        if !selectedAtoms.contains(where: { $0.atomId == atom.atomId }) {
-                            selectedAtoms.append(atom)
-                        }
-                        
-                        if selectedAtoms.count == 2 {
-                            let atomA = selectedAtoms[0]
-                            let atomB = selectedAtoms[1]
-                            
-                            let command = BondCommand(
-                                atomA: atomA,
-                                atomB: atomB,
-                                moleculeManager: appModel.moleculeManager
-                            )
-                            
-                            Task {
-                                await appModel.commandManager.execute(command, in: content)
-                            }
-                            
-                            selectedAtoms.removeAll()
-                        }
-                    }
-                case .erase:
-                    if let atom = appModel.atomManager.findAtom(by: entity.name) {
-                        let command = DeleteCommand(
-                            target: .atom(atom),
-                            atomManager: appModel.atomManager,
-                            moleculeManager: appModel.moleculeManager
-                        )
-                        Task {
-                            await appModel.commandManager.execute(command, in: content)
-                        }
-                    } else if let molecule = appModel.moleculeManager.allMoleculesList().first(where: { $0.entity?.name == entity.name }) {
-                        let command = DeleteCommand(
-                            target: .molecule(molecule),
-                            atomManager: appModel.atomManager,
-                            moleculeManager: appModel.moleculeManager
-                        )
-                        Task {
-                            await appModel.commandManager.execute(command, in: content)
-                        }
-                    }
-                default:
-                    break
-                }
+                handleTap(on: value.entity)
             }
     }
+}
+
+// MARK: - Tap Handling Methods
+
+extension LabView {
+    /// 사용자가 RealityKit 엔티티를 탭했을 때 실행됩니다.
+    /// 현재 선택된 툴 종류에 따라 확대/결합/삭제 등의 명령을 실행합니다.
+    /// - Parameter entity: 유저가 탭한 RealityKit 엔티티입니다.
+    private func handleTap(on entity: Entity) {
+        guard let content = appModel.realityContent else { return }
+
+        switch appModel.selectedTool {
+        case .magnify:
+            handleMagnifyTap(on: entity, in: content)
+        case .bond:
+            handleBondTap(on: entity, in: content)
+        case .erase:
+            handleEraseTap(on: entity, in: content)
+        default:
+            break
+        }
+    }
     
-    func toolDidChange(to newTool: ToolType) {
+    /// 확대 툴 선택 상태에서 원자를 탭했을 때 처리합니다.
+    /// 이미 확대된 원자면 확대 해제하고, 아니면 새로 확대합니다.
+    /// - Parameters:
+    ///   - entity: 유저가 탭한 RealityKit 엔티티입니다.
+    ///   - content: RealityView에서 제공하는 콘텐츠 엔티티 컨테이너입니다.
+    private func handleMagnifyTap(on entity: Entity, in content: RealityViewContent) {
+        guard let tapped = appModel.atomManager.findAtom(by: entity.name) else { return }
+
+        if tapped.atomId != viewModel.currentMagnifiedAtom?.atomId {
+            let command = MagnifyAtomCommand(previous: viewModel.currentMagnifiedAtom, new: tapped)
+            viewModel.currentMagnifiedAtom = tapped
+            Task { await appModel.commandManager.execute(command, in: content) }
+        } else {
+            let command = MagnifyAtomCommand(previous: viewModel.currentMagnifiedAtom, new: nil)
+            viewModel.deselectMagnifiedAtom()
+            Task { await appModel.commandManager.execute(command, in: content) }
+        }
+    }
+    
+    /// 결합 툴 선택 상태에서 원자를 두 개 선택하면 분자를 형성하는 명령을 실행합니다.
+    /// - Parameters:
+    ///   - entity: 유저가 탭한 RealityKit 엔티티입니다.
+    ///   - content: RealityView에서 제공하는 콘텐츠 엔티티 컨테이너입니다.
+    private func handleBondTap(on entity: Entity, in content: RealityViewContent) {
+        guard let atom = appModel.atomManager.findAtom(by: entity.name) else { return }
+
+        if !viewModel.selectedAtoms.contains(where: { $0.atomId == atom.atomId }) {
+            viewModel.selectedAtoms.append(atom)
+        }
+
+        if viewModel.selectedAtoms.count == 2 {
+            let command = BondCommand(atomA: viewModel.selectedAtoms[0], atomB: viewModel.selectedAtoms[1], moleculeManager: appModel.moleculeManager)
+            Task { await appModel.commandManager.execute(command, in: content) }
+            viewModel.resetSelection()
+        }
+    }
+
+    /// 삭제 툴 선택 상태에서 원자나 분자를 탭하면 해당 객체를 삭제합니다.
+    /// - Parameters:
+    ///   - entity: 유저가 탭한 RealityKit 엔티티입니다.
+    ///   - content: RealityView에서 제공하는 콘텐츠 엔티티 컨테이너입니다.
+    private func handleEraseTap(on entity: Entity, in content: RealityViewContent) {
+        if let atom = appModel.atomManager.findAtom(by: entity.name) {
+            let command = DeleteCommand(target: .atom(atom), atomManager: appModel.atomManager, moleculeManager: appModel.moleculeManager)
+            Task { await appModel.commandManager.execute(command, in: content) }
+        } else if let molecule = appModel.moleculeManager.allMoleculesList().first(where: { $0.entity?.name == entity.name }) {
+            let command = DeleteCommand(target: .molecule(molecule), atomManager: appModel.atomManager, moleculeManager: appModel.moleculeManager)
+            Task { await appModel.commandManager.execute(command, in: content) }
+        }
+    }
+
+    // MARK: - Tool Change
+    
+    /// 툴 변경 요청이 발생했을 때 실행됩니다.
+    /// 현재 확대된 원자가 있다면 해제하고, 툴 상태를 갱신합니다.
+    /// - Parameter newTool: 새로 선택된 툴 타입입니다.
+    private func handleToolChange(to newTool: ToolType) {
         Task {
-            if let magnified = currentMagnifiedAtom {
+            if let magnified = viewModel.currentMagnifiedAtom {
                 let cancelCommand = MagnifyAtomCommand(previous: magnified, new: nil)
                 await appModel.commandManager.execute(cancelCommand, in: appModel.realityContent!)
-                currentMagnifiedAtom = nil
+                viewModel.deselectMagnifiedAtom()
             }
-            
+
             let changeCommand = ChangeToolCommand(from: appModel.selectedTool, to: newTool, appModel: appModel)
             await appModel.commandManager.execute(changeCommand, in: appModel.realityContent!)
             appModel.selectedTool = newTool
-            
             appModel.toolChangeRequest = nil
         }
     }
 }
 
 #Preview(windowStyle: .volumetric) {
-    LabView()
+    LabView(viewModel: LabViewModel())
         .environment(AppModel())
 }

@@ -26,7 +26,7 @@ struct Ato_visionOSApp: App {
         .windowStyle(.plain)
       
         WindowGroup(id: appModel.labID) {
-            LabView()
+            LabView(viewModel: LabViewModel())
                 .environment(appModel)
         }
         .windowStyle(.volumetric)
