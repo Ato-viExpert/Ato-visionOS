@@ -8,11 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		2D4BC4BD2E264DDC00BB30F0 /* RealityKitContent in Frameworks */ = {isa = PBXBuildFile; productRef = 2D4BC4BC2E264DDC00BB30F0 /* RealityKitContent */; };
+		9409C8922E36763500F072AB /* RealityFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94F0BADC2E36737F00F5132A /* RealityFoundation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		2D4BC4B72E264DDC00BB30F0 /* Ato-visionOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Ato-visionOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D4BC4BB2E264DDC00BB30F0 /* RealityKitContent */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RealityKitContent; sourceTree = "<group>"; };
+		94F0BADC2E36737F00F5132A /* RealityFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RealityFoundation.framework; path = System/Library/Frameworks/RealityFoundation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -41,6 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9409C8922E36763500F072AB /* RealityFoundation.framework in Frameworks */,
 				2D4BC4BD2E264DDC00BB30F0 /* RealityKitContent in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -53,6 +56,7 @@
 			children = (
 				2D4BC4B92E264DDC00BB30F0 /* Ato-visionOS */,
 				2D4BC4BA2E264DDC00BB30F0 /* Packages */,
+				94F0BADB2E36737E00F5132A /* Frameworks */,
 				2D4BC4B82E264DDC00BB30F0 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -71,6 +75,14 @@
 				2D4BC4BB2E264DDC00BB30F0 /* RealityKitContent */,
 			);
 			path = Packages;
+			sourceTree = "<group>";
+		};
+		94F0BADB2E36737E00F5132A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				94F0BADC2E36737F00F5132A /* RealityFoundation.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

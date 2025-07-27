@@ -47,3 +47,10 @@ struct ToggleImmersiveSpaceButton: View {
         .fontWeight(.semibold)
     }
 }
+
+
+
+#Preview(windowStyle: .plain) {
+    ToggleImmersiveSpaceButton()
+        .environment(AppModel())
+}

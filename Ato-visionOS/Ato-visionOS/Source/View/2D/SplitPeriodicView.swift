@@ -25,7 +25,6 @@ struct SplitPeriodicView: View {
         GeometryReader {geometry in
             let width: CGFloat = geometry.size.width
             let height: CGFloat = geometry.size.height
-//            let dynamicCorner = min(30, min(width, height) * 0.05)
             
             HStack(spacing: 10) {
                 // MARK: - 주기율표 뷰 (왼쪽)
@@ -51,60 +50,33 @@ struct SplitPeriodicView: View {
                     .frame(width: width * 0.001)
 
                 // MARK: - 상세 정보 뷰 (오른쪽)
-//                Group {
-//                if let molecule = selectedMolecule {
-//                    elementDetail = .molecule(molecule)
-//                } else if let atom = selectedAtom {
-//                    elementDetail = .atom(atom)
-//                }
-//                if let detail = elementDetail {
-//                    ElementDetailView(
-//                        elementDetail: $elementDetail, // ✅ 바인딩 넘기는 부분
-//                        width: width * 0.28,
-//                        height: height
-//                    )
-//                } else {
-//                    Text("원소를 선택해주세요.")
-//                }
-//                    VStack {
-//                        Spacer()
-//                        Text("원소를 선택해주세요.")
-//                            .font(
-//                                Font.custom("SF Pro Display", size: width * 0.02)
-//                            .weight(.bold)
-//                            )
-//                            .multilineTextAlignment(.center)
-//                            .foregroundStyle(.white.opacity(0.2))
-//                            //.dynamicTypeSize(.xLarge)
-//                        Spacer()
-//                    }
-//                }
-                if let detail = elementDetail {
-                    ElementDetailView(
-                        elementDetail: $elementDetail,  // ← 바인딩 전달
-                        width: width * 0.28,
-                        height: height
-                    )
-                } else {
-                    VStack {
-                        Spacer()
-                        Text("원소를 선택해주세요.")
-                            .font(
-                                Font.custom("SF Pro Display", size: width * 0.02)
-                                    .weight(.bold)
-                            )
-                            .multilineTextAlignment(.center)
-                            .foregroundStyle(.white.opacity(0.2))
-                        Spacer()
+                Group{
+                    if elementDetail != nil {
+                        ElementDetailView(
+                            elementDetail: $elementDetail,  // ← 바인딩 전달
+                            width: width * 0.28,
+                            height: height
+                        )
+                    } else {
+                        VStack {
+                            Spacer()
+                            Text("원소를 선택해주세요.")
+                                .font(
+                                    Font.custom("SF Pro Display", size: width * 0.02)
+                                        .weight(.bold)
+                                )
+                                .multilineTextAlignment(.center)
+                                .foregroundStyle(.white.opacity(0.2))
+                            Spacer()
+                        }
+                        .frame(width: width * 0.28, height: height)
+                        .bg()
+                        .cornerRadius(55)
                     }
-                    .frame(width: width * 0.28, height: height)
-                    .bg()
-                    .cornerRadius(55)
                 }
-//                }
-//                .frame(width: width * 0.28, height: height)
-//                .bg()
-//                .cornerRadius(55)
+                .frame(width: width * 0.28, height: height)
+                .bg()
+                .cornerRadius(55)
             }
             .padding(.bottom, 40)
             .onChange(of: selectedAtom) { 
@@ -113,8 +85,8 @@ struct SplitPeriodicView: View {
                     selectedMolecule = nil  // 분자 선택 초기화
                 }
             }
-            .onChange(of: selectedMolecule) { newMolecule in
-                if let molecule = newMolecule {
+            .onChange(of: selectedMolecule) {
+                if let molecule = selectedMolecule {
                     elementDetail = .molecule(molecule)
                     selectedAtom = nil  // 원자 선택 초기화
                 }

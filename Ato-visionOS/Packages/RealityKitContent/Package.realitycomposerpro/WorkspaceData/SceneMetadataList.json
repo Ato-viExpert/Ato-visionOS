@@ -25,7 +25,8 @@
     "objectMetadataList" : [
       [
         "03092C91-920E-45F2-AA94-A24E318BB466",
-        "root"
+        "root",
+        "Sphere_001"
       ],
       {
         "isExpanded" : true,
@@ -33,8 +34,7 @@
       },
       [
         "03092C91-920E-45F2-AA94-A24E318BB466",
-        "root",
-        "Sphere_001"
+        "root"
       ],
       {
         "isExpanded" : true,
@@ -161,7 +161,7 @@
       [
         "248B7CB2-40CA-4EE1-9AC1-82B9D718385D",
         "root",
-        "Sphere_001"
+        "Camera"
       ],
       {
         "isExpanded" : true,
@@ -178,7 +178,7 @@
       [
         "248B7CB2-40CA-4EE1-9AC1-82B9D718385D",
         "root",
-        "Camera"
+        "Sphere_001"
       ],
       {
         "isExpanded" : true,
@@ -214,23 +214,6 @@
         "Root"
       ],
       {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "2DE3DFA8-85B2-4296-92AC-4982A7638394",
-        "Root"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "2DE3DFA8-85B2-4296-92AC-4982A7638394",
-        "SkySphere"
-      ],
-      {
-        "disallowsFraming" : true,
         "isExpanded" : true,
         "isLocked" : false
       }
@@ -369,53 +352,7 @@
     "objectMetadataList" : [
       [
         "5CCE9FC0-26E0-4542-9318-802114FF4DE5",
-        "root",
-        "H",
-        "Text"
-      ],
-      {
-        "disallowsFraming" : false,
-        "isExpanded" : false,
-        "isLocked" : false
-      },
-      [
-        "5CCE9FC0-26E0-4542-9318-802114FF4DE5",
-        "root",
-        "Light"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "5CCE9FC0-26E0-4542-9318-802114FF4DE5",
-        "root",
-        "Sphere_001"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "5CCE9FC0-26E0-4542-9318-802114FF4DE5",
         "root"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "5CCE9FC0-26E0-4542-9318-802114FF4DE5",
-        "root"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "5CCE9FC0-26E0-4542-9318-802114FF4DE5",
-        "root",
-        "Sphere_001"
       ],
       {
         "isExpanded" : true,
@@ -435,12 +372,30 @@
       [
         "5CCE9FC0-26E0-4542-9318-802114FF4DE5",
         "root",
+        "Sphere_001"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "5CCE9FC0-26E0-4542-9318-802114FF4DE5",
+        "root",
         "H",
         "Text"
       ],
       {
         "disallowsFraming" : false,
         "isExpanded" : false,
+        "isLocked" : false
+      },
+      [
+        "5CCE9FC0-26E0-4542-9318-802114FF4DE5",
+        "root",
+        "Light"
+      ],
+      {
+        "isExpanded" : true,
         "isLocked" : false
       }
     ]
@@ -519,15 +474,6 @@
     "objectMetadataList" : [
       [
         "7CC341AC-C4C0-4942-98BD-A5635262AE88",
-        "SkySphere"
-      ],
-      {
-        "disallowsFraming" : true,
-        "isExpanded" : false,
-        "isLocked" : false
-      },
-      [
-        "7CC341AC-C4C0-4942-98BD-A5635262AE88",
         "Root"
       ],
       {
@@ -546,10 +492,11 @@
       },
       [
         "7CC341AC-C4C0-4942-98BD-A5635262AE88",
-        "Root"
+        "SkySphere"
       ],
       {
-        "isExpanded" : true,
+        "disallowsFraming" : true,
+        "isExpanded" : false,
         "isLocked" : false
       }
     ]
@@ -558,7 +505,8 @@
     "objectMetadataList" : [
       [
         "7DC17268-A4EF-44D3-A78C-6C1525045FF8",
-        "root"
+        "root",
+        "light"
       ],
       {
         "isExpanded" : true,
@@ -566,8 +514,7 @@
       },
       [
         "7DC17268-A4EF-44D3-A78C-6C1525045FF8",
-        "root",
-        "light"
+        "root"
       ],
       {
         "isExpanded" : true,
@@ -615,8 +562,7 @@
     "objectMetadataList" : [
       [
         "A1CDC858-511E-427F-ABF2-2F2B941A2D18",
-        "root",
-        "B__zierCircle_003"
+        "root"
       ],
       {
         "isExpanded" : true,
@@ -624,7 +570,8 @@
       },
       [
         "A1CDC858-511E-427F-ABF2-2F2B941A2D18",
-        "root"
+        "root",
+        "B__zierCircle_003"
       ],
       {
         "isExpanded" : true,
@@ -648,6 +595,14 @@
     "objectMetadataList" : [
       [
         "AF09ED6F-1707-48FD-8720-65B998362C09",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "AF09ED6F-1707-48FD-8720-65B998362C09",
         "Root",
         "Sphere_Right"
       ],
@@ -659,14 +614,6 @@
         "AF09ED6F-1707-48FD-8720-65B998362C09",
         "Root",
         "Sphere_Left"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "AF09ED6F-1707-48FD-8720-65B998362C09",
-        "Root"
       ],
       {
         "isExpanded" : true,
@@ -758,7 +705,14 @@
       [
         "D1244F03-F15C-4A08-A6E3-6920574CAABF",
         "Root",
-        "DirectionalLight"
+        "im",
+        "stylized_medieval_castle_room_001",
+        "Meshes_002",
+        "Sketchfab_model_002",
+        "_08fccd2c593457d8c1814462df8becf_fbx_001",
+        "RootNode_002",
+        "Cylinder_001",
+        "Cylinder_stuff_0_002"
       ],
       {
         "disallowsFraming" : false,
@@ -768,11 +722,19 @@
       [
         "D1244F03-F15C-4A08-A6E3-6920574CAABF",
         "Root",
-        "SpotLight"
+        "DirectionalLight"
       ],
       {
         "disallowsFraming" : false,
         "isExpanded" : false,
+        "isLocked" : false
+      },
+      [
+        "D1244F03-F15C-4A08-A6E3-6920574CAABF",
+        "im"
+      ],
+      {
+        "isExpanded" : true,
         "isLocked" : false
       },
       [
@@ -797,14 +759,7 @@
       [
         "D1244F03-F15C-4A08-A6E3-6920574CAABF",
         "Root",
-        "im",
-        "stylized_medieval_castle_room_001",
-        "Meshes_002",
-        "Sketchfab_model_002",
-        "_08fccd2c593457d8c1814462df8becf_fbx_001",
-        "RootNode_002",
-        "Cylinder_001",
-        "Cylinder_stuff_0_002"
+        "SpotLight"
       ],
       {
         "disallowsFraming" : false,
@@ -822,9 +777,7 @@
     "objectMetadataList" : [
       [
         "D66134B1-3681-4A8E-AFE5-29F257229F3B",
-        "Root",
-        "GridMaterial",
-        "GridMaterial"
+        "Root"
       ],
       {
         "isExpanded" : true,
@@ -832,7 +785,9 @@
       },
       [
         "D66134B1-3681-4A8E-AFE5-29F257229F3B",
-        "Root"
+        "Root",
+        "GridMaterial",
+        "GridMaterial"
       ],
       {
         "isExpanded" : true,
@@ -844,7 +799,8 @@
     "objectMetadataList" : [
       [
         "D74053E4-8649-4A23-BE4D-CCBD51167198",
-        "root"
+        "root",
+        "B__zierCircle_004"
       ],
       {
         "isExpanded" : true,
@@ -852,8 +808,7 @@
       },
       [
         "D74053E4-8649-4A23-BE4D-CCBD51167198",
-        "root",
-        "B__zierCircle_004"
+        "root"
       ],
       {
         "isExpanded" : true,
@@ -947,8 +902,7 @@
       [
         "F94C04C8-4FF2-4091-9EB3-F20F969A0896",
         "root",
-        "m",
-        "B__zierCircle_004"
+        "m"
       ],
       {
         "isExpanded" : true,
@@ -967,7 +921,7 @@
       [
         "F94C04C8-4FF2-4091-9EB3-F20F969A0896",
         "root",
-        "m"
+        "Sphere_001"
       ],
       {
         "isExpanded" : true,
@@ -994,7 +948,8 @@
       [
         "F94C04C8-4FF2-4091-9EB3-F20F969A0896",
         "root",
-        "Sphere_001"
+        "m",
+        "B__zierCircle_004"
       ],
       {
         "isExpanded" : true,
