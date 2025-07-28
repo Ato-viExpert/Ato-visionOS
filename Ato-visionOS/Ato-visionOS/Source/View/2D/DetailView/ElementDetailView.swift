@@ -11,11 +11,9 @@ import SwiftUI
 struct ElementDetailView: View {
     
     @Binding var elementDetail: ElementDetail?
-    
     @State private var selectedMolecule: DetailMoleculeModel? = nil
     
     private let allDescriptions = DetailMoleculeMockData.allDescriptions
-    
     let width: CGFloat
     let height: CGFloat
     
@@ -34,9 +32,6 @@ struct ElementDetailView: View {
                 }
             }
             
-            // 상세 내용 표시
-            
-//            Group {
             switch elementDetail {
             case .atom(let atom):
                 AtomDetailView(atom: atom, width: width, height: height)
@@ -63,8 +58,6 @@ struct ElementDetailView: View {
                     Spacer()
                 }
             }
-//            }
-//            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .padding()
 

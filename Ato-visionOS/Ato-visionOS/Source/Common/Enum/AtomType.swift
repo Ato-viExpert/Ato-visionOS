@@ -243,4 +243,7 @@ extension AtomType {
         ]
         return map[atomicNumber]
     }
+    static func from(symbol: String) -> AtomType? {
+        return AtomType(rawValue: symbol)
+    }
 }

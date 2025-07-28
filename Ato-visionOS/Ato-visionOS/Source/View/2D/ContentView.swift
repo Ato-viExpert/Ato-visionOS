@@ -19,14 +19,11 @@ struct ContentView: View {
             SplitPeriodicView()
                 .padding(.bottom, 40)
                 .frame(minWidth: 900, minHeight: 600)
-//                .fixedSize()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-    //            .bg()
                 .clipShape(RoundedRectangle(cornerRadius: 55))
                 .padding(.bottom, 35)
                 .onPreferenceChange(SplitViewWindowSizeKey.self) { newSize in
                     splitSize = newSize
-                    print("newSize: \(newSize)")
                 }
             
         }

@@ -32,13 +32,13 @@ struct SplitPeriodicView: View {
                 ZStack(alignment: .bottom) {
                     PeriodicTableView(
                         selectedAtom: $selectedAtom,
-                        elementsGrid: elementsGrid,
+//                        elementsGrid: elementsGrid,
                         width: width * 0.71,
                         height: height
                     )
                     .frame(width: width * 0.71, height: height)
                     .bg()
-                    .cornerRadius(55)
+                    .clipShape(RoundedRectangle(cornerRadius: 55))
                     
                     ToolbarView(width: width, height: height)
                         .offset(y: 30)
@@ -71,12 +71,12 @@ struct SplitPeriodicView: View {
                         }
                         .frame(width: width * 0.28, height: height)
                         .bg()
-                        .cornerRadius(55)
+                        .clipShape(RoundedRectangle(cornerRadius: 55))
                     }
                 }
                 .frame(width: width * 0.28, height: height)
                 .bg()
-                .cornerRadius(55)
+                .clipShape(RoundedRectangle(cornerRadius: 55))
             }
             .padding(.bottom, 40)
             .onChange(of: selectedAtom) { 
@@ -92,20 +92,6 @@ struct SplitPeriodicView: View {
                 }
             }
         }
-    }
-}
-
-struct RoundedCorners: Shape {
-    var radius: CGFloat = 30.0
-    var corners: UIRectCorner = .allCorners
-
-    func path(in rect: CGRect) -> Path {
-        let path = UIBezierPath(
-            roundedRect: rect,
-            byRoundingCorners: corners,
-            cornerRadii: CGSize(width: radius, height: radius)
-        )
-        return Path(path.cgPath)
     }
 }
 
