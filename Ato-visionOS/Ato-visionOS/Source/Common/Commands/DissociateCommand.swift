@@ -83,6 +83,10 @@ final class DissociateCommand: Command {
                             entity.components.set(InputTargetComponent())
                         }
                         
+                        if !entity.components.has(HoverEffectComponent.self) {
+                            entity.components.set(HoverEffectComponent())
+                        }
+                        
                         let bounds = entity.visualBounds(relativeTo: nil)
                         let shape = ShapeResource.generateSphere(radius: bounds.extents.x / 2)
                         entity.components.set(CollisionComponent(shapes: [shape]))
@@ -108,6 +112,7 @@ final class DissociateCommand: Command {
                         let shape = ShapeResource.generateBox(size: bounds.extents)
                         moleculeEntity.components.set(CollisionComponent(shapes: [shape]))
                         moleculeEntity.components.set(InputTargetComponent())
+                        moleculeEntity.components.set(HoverEffectComponent())
                         content.add(moleculeEntity)
                     }
                     

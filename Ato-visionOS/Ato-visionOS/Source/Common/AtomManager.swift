@@ -11,8 +11,23 @@ final class AtomManager {
     // MARK: - Properties
     
     private var atoms: [UUID: LabAtom] = [:]
+    var selectedAtom: LabAtom? = nil {
+        didSet {
+            if let atom = selectedAtom {
+                print("✅ 선택된 원자 변경됨: \(atom.symbol)")
+            } else {
+                print("🟡 선택된 원자가 nil로 변경됨")
+            }
+        }
+    }
     
     // MARK: - Public Methods
+    
+    /// 선택된 원자 세팅
+    /// - Parameter atom: LabAtom
+    func selectAtom(_ atom: LabAtom) {
+        selectedAtom = atom
+    }
     
     /// atoms(실험실에 나와있는 원자리스트)에서 원자 등록
     /// - Parameter atom: LabAtom

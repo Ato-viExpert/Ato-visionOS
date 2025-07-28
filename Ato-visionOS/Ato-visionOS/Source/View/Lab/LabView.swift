@@ -46,10 +46,10 @@ struct LabView: View {
     /// - Parameter content: RealityKit 뷰의 콘텐츠 엔티티 컨테이너입니다.
     private func setupEntities(in content: RealityViewContent) {
         for entity in content.entities {
-            if entity.components[CollisionComponent.self] == nil {
-                let shape = ShapeResource.generateSphere(radius: 0.05)
-                entity.components.set(CollisionComponent(shapes: [shape]))
-            }
+//            if entity.components[CollisionComponent.self] == nil {
+//                let shape = ShapeResource.generateSphere(radius: 0.05)
+//                entity.components.set(CollisionComponent(shapes: [shape]))
+//            }
             let material = PhysicsMaterialResource.generate(staticFriction: 0.0, dynamicFriction: 0.0, restitution: 0.95)
             let physicsBody = PhysicsBodyComponent(massProperties: .init(mass: 0.005), material: material, mode: .kinematic)
             entity.components.set(physicsBody)

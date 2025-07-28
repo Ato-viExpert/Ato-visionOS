@@ -15,6 +15,7 @@ struct Bond{
 }
 
 class LabAtom: Atom {
+    
     // MARK: - Propteries
     
     public let atomId = UUID() /// 원자 고유 번호(동일 원자들과 결합시 구분)
@@ -33,7 +34,7 @@ class LabAtom: Atom {
     
     private let diffuseColor: UIColor /// 확산 색상
     private let emissiveColor: UIColor /// 발광 색상
-    private let modelScale: Float /// 모델 크기
+    public  let modelScale: Float /// 모델 크기
     private(set) var entity: Entity?
     private(set) var magnifiedEntity: Entity?
     private(set) var position: SIMD3<Float> = .zero
@@ -139,6 +140,7 @@ extension LabAtom {
             let shape = ShapeResource.generateBox(size: bounds.extents)
             root.components.set(CollisionComponent(shapes: [shape]))
             root.components.set(InputTargetComponent())
+            root.components.set(HoverEffectComponent())
         }
         self.entity = root
         return root
@@ -171,6 +173,7 @@ extension LabAtom {
         let shape =  ShapeResource.generateBox(size: bounds.extents)
         root.components.set(CollisionComponent(shapes: [shape]))
         root.components.set(InputTargetComponent())
+        root.components.set(HoverEffectComponent())
         magnifiedEntity = root
         return root
     }
@@ -249,5 +252,13 @@ extension LabAtom {
                 try? await Task.sleep(nanoseconds: 16_000_000)
             }
         }
+    }
+}
+
+// MARK: - Equatable
+
+extension LabAtom: Equatable {
+    static func == (lhs: LabAtom, rhs: LabAtom) -> Bool {
+        return lhs.atomId == rhs.atomId
     }
 }

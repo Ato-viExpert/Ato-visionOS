@@ -142,28 +142,28 @@ enum AtomType: String, CaseIterable {
     /// 원자 크기
     var modelScale: Float {
         switch self {
-        case .H: return 0.700
-        case .He: return 0.7875
-        case .Li: return 1.050
-        case .Be: return 1.015
-        case .B: return 0.9625
-        case .C: return 0.910
-        case .N: return 0.8925
-        case .O: return 0.875
-        case .F: return 0.875
-        case .Ne: return 0.840
-        case .Na: return 1.1375
-        case .Mg: return 1.085
-        case .Al: return 1.0675
-        case .Si: return 1.050
-        case .P: return 1.0325
-        case .S: return 1.015
-        case .Cl: return 0.9975
-        case .Ar: return 0.9625
-        case .K: return 1.225
-        case .Ca: return 1.190
-        case .Br: return 1.260
-        case .I: return 1.365
+        case .H: return 1.500
+        case .He: return 1.689
+        case .Li: return 2.250
+        case .Be: return 2.174
+        case .B: return 2.061
+        case .C: return 1.948
+        case .N: return 1.911
+        case .O: return 1.875
+        case .F: return 1.875
+        case .Ne: return 1.800
+        case .Na: return 2.446
+        case .Mg: return 2.321
+        case .Al: return 2.286
+        case .Si: return 2.250
+        case .P: return 2.214
+        case .S: return 2.174
+        case .Cl: return 2.138
+        case .Ar: return 2.061
+        case .K: return 2.625
+        case .Ca: return 2.554
+        case .Br: return 2.700
+        case .I: return 2.928
         }
     }
     
@@ -243,7 +243,56 @@ extension AtomType {
         ]
         return map[atomicNumber]
     }
+    
+    /// 원자기호로 AtomType 매칭
+    /// - Parameter symbol: 원자 기호 (예: "H", "O", "Na")
+    /// - Returns: AtomType 또는 nil
     static func from(symbol: String) -> AtomType? {
-        return AtomType(rawValue: symbol)
+        return AtomType.allCases.first(where: { $0.symbol == symbol })
+    }
+}
+
+
+// MARK: - 화학식 생성 ElementCount에 넣기 위해 필요한 값
+extension AtomType {
+    /// 파울링 전기음성도
+    var electronegativity: Float {
+        switch self {
+        case .F: return 3.98
+        case .O: return 3.44
+        case .Cl: return 3.16
+        case .N: return 3.04
+        case .Br: return 2.96
+        case .I: return 2.66
+        case .S: return 2.58
+        case .C: return 2.55
+        case .P: return 2.19
+        case .H: return 2.20
+        case .Si: return 1.90
+        case .B: return 2.04
+        case .Be: return 1.57
+        case .Al: return 1.61
+        case .Mg: return 1.31
+        case .Na: return 0.93
+        case .K: return 0.82
+        case .Ca: return 1.00
+        case .Li: return 0.98
+        case .He, .Ne, .Ar: return 0.0
+        }
+    }
+    
+    /// 산의 조건에 따라 앞에 오는 H 여부
+    var isAcidHydrogen: Bool {
+        return self == .H
+    }
+    
+    /// 금속 여부 기반으로 양이온 여부
+    var isCation: Bool {
+        return [.Na, .K, .Ca, .Mg, .Li, .Be, .Al].contains(self)
+    }
+
+    /// 비금속 중 전형적인 음이온
+    var isAnion: Bool {
+        return [.Cl, .Br, .I, .O, .F, .S].contains(self)
     }
 }
