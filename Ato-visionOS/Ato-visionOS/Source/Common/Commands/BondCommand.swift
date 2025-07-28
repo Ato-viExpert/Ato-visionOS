@@ -47,7 +47,6 @@ final class BondCommand: Command {
     func execute(in content: RealityViewContent) async throws -> CommandResult {
         let molecule = moleculeManager.createBondedAtoms(atomA: atomA, atomB: atomB)
         
-        
         if let moleculeEntity = molecule?.entity {
             let bounds = await moleculeEntity.visualBounds(relativeTo: nil)
             let shape = await ShapeResource.generateBox(size: bounds.extents)
@@ -61,7 +60,6 @@ final class BondCommand: Command {
 
         if let moleculeEntity = molecule?.entity {
             content.add(moleculeEntity)
-            
         }
         
         if let molecule = molecule {

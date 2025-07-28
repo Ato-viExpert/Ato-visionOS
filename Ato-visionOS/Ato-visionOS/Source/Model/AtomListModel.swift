@@ -17,3 +17,5 @@ struct AtomSummary: Identifiable {
     let group: Int        // 주기율표 세로 족
     let period: Int       // 주기율표 가로 주기
 }
+
+

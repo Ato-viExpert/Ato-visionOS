@@ -13,9 +13,24 @@ final class MoleculeManager {
     // MARK: - Properties
     
     private(set) var molecules: [LabMolecule] = []
+    var selectedMolecule: LabMolecule? = nil {
+        didSet {
+            if let molecule = selectedMolecule {
+                print("✅ 선택된 분자 변경됨: \(molecule.compositionSymbol)")
+            } else {
+                print("🟡 선택된 분자가 nil로 변경됨")
+            }
+        }
+    }
     
     // MARK: - Public Methods
-
+    
+    /// 선택된 Molecule세팅
+    /// - Parameter molecule: LabMolecule
+    func selectMolecule(_ molecule: LabMolecule) {
+        selectedMolecule = molecule
+    }
+    
     /// 전체 분자 반환
     /// - Returns: [LabMolecule]
     func allMoleculesList() -> [LabMolecule] {
@@ -41,6 +56,7 @@ final class MoleculeManager {
     func register(_ molecule: LabMolecule) {
         if !molecules.contains(where: { $0.moleculeId == molecule.moleculeId }) {
             molecules.append(molecule)
+            selectedMolecule = molecule
         }
     }
     
