@@ -97,8 +97,8 @@ extension LabView {
         switch appModel.selectedTool {
         case .magnify:
             handleMagnifyTap(on: entity, in: content)
-        case .bond:
-            handleBondTap(on: entity, in: content)
+        case .bond, .dissociate:
+            handleBondDissociateTap(on: entity, in: content)
         case .erase:
             handleEraseTap(on: entity, in: content)
         default:
@@ -125,24 +125,43 @@ extension LabView {
         }
     }
     
-    /// 결합 툴 선택 상태에서 원자를 두 개 선택하면 분자를 형성하는 명령을 실행합니다.
+    
+    /// 사용자가 원자를 탭했을 때 결합 또는 분해 도구에 따라 적절한 명령을 실행합니다.
     /// - Parameters:
-    ///   - entity: 유저가 탭한 RealityKit 엔티티입니다.
-    ///   - content: RealityView에서 제공하는 콘텐츠 엔티티 컨테이너입니다.
-    private func handleBondTap(on entity: Entity, in content: RealityViewContent) {
-        guard let atom = appModel.atomManager.findAtom(by: entity.name) else { return }
-
-        if !viewModel.selectedAtoms.contains(where: { $0.atomId == atom.atomId }) {
-            viewModel.selectedAtoms.append(atom)
-        }
-
-        if viewModel.selectedAtoms.count == 2 {
-            let command = BondCommand(atomA: viewModel.selectedAtoms[0], atomB: viewModel.selectedAtoms[1], moleculeManager: appModel.moleculeManager)
+    ///   - entity: 사용자 입력이 발생한 RealityKit 엔티티
+    ///   - content: RealityView의 콘텐츠. entity 추가 및 제거에 사용됨
+    private func handleBondDissociateTap(on entity: Entity, in content: RealityViewContent) {
+        guard let labAtom = appModel.atomManager.findAtom(by: entity.name) else { return }
+        
+        guard !viewModel.selectedAtoms.contains(where: { $0.atomId == labAtom.atomId }) else { return }
+        viewModel.selectedAtoms.append(labAtom)
+        
+        guard viewModel.selectedAtoms.count == 2 else { return }
+        
+        let atomA = viewModel.selectedAtoms[0]
+        let atomB = viewModel.selectedAtoms[1]
+        
+        switch appModel.selectedTool {
+        case .bond:
+            let command = BondCommand(
+                atomA: atomA,
+                atomB: atomB,
+                atomManager: appModel.atomManager,
+                moleculeManager: appModel.moleculeManager
+            )
             Task { await appModel.commandManager.execute(command, in: content) }
-            viewModel.resetSelection()
+            
+        case .dissociate:
+            let command = DissociateCommand(atomA: atomA, atomB: atomB, moleculeManager: appModel.moleculeManager)
+            Task { await appModel.commandManager.execute(command, in: content) }
+            
+        default:
+            break
         }
+        
+        viewModel.resetSelection()
     }
-
+    
     /// 삭제 툴 선택 상태에서 원자나 분자를 탭하면 해당 객체를 삭제합니다.
     /// - Parameters:
     ///   - entity: 유저가 탭한 RealityKit 엔티티입니다.
@@ -160,9 +179,14 @@ extension LabView {
     // MARK: - Tool Change
     
     /// 툴 변경 요청이 발생했을 때 실행됩니다.
+    /// 결합과 해제 툴일때는 분자 내 원자가 개별 선택되록 터치 영역을 바꿉니다.
     /// 현재 확대된 원자가 있다면 해제하고, 툴 상태를 갱신합니다.
     /// - Parameter newTool: 새로 선택된 툴 타입입니다.
     private func handleToolChange(to newTool: ToolType) {
+        for molecule in appModel.moleculeManager.allMoleculesList() {
+            molecule.setInteractionMode(for: newTool)
+        }
+        
         Task {
             if let magnified = viewModel.currentMagnifiedAtom {
                 let cancelCommand = MagnifyAtomCommand(previous: magnified, new: nil)

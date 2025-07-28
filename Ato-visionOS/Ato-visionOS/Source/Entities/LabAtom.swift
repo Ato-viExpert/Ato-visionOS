@@ -87,6 +87,7 @@ class LabAtom: Atom {
         if let index = bonds.firstIndex(where: { $0.atomUUID == bond.atomUUID }) {
             let removedBond = bonds[index]
             bonds.remove(at: index)
+            self.moleculeId = nil
             decreaseSharedElectrons(by: removedBond.bondType)
         }
     }

@@ -62,6 +62,9 @@ final class DeleteCommand: Command {
         case .atom(let atom):
             atomManager.unregister(atom)
         case .molecule(let molecule):
+            for atom in molecule.atoms {
+                atomManager.unregister(atom)
+            }
             moleculeManager.unregister(molecule)
         }
 
