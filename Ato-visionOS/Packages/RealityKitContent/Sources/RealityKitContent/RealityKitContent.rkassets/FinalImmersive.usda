@@ -376,6 +376,329 @@ def "im" (
             float intensity = 16000
         }
     }
+
+    over "game_ready_free_chocolates"
+    {
+        def RealityKitComponent "InputTarget"
+        {
+            uniform token info:id = "RealityKit.InputTarget"
+        }
+
+        def RealityKitComponent "Collider"
+        {
+            uint group = 1
+            uniform token info:id = "RealityKit.Collider"
+            uint mask = 4294967295
+            token type = "Default"
+
+            def RealityKitStruct "Shape"
+            {
+                float3 extent = (6.685478, 1.2642231, 5.6141205)
+                float height = 1.2642231
+                float radius = 3.342739
+                token shapeType = "Capsule"
+
+                def RealityKitStruct "pose"
+                {
+                    float3 position = (46.96509, -9.795651, 42.235054)
+                }
+            }
+        }
+
+        def RealityKitComponent "RCP_BehaviorsContainer"
+        {
+            rel behaviors = </im/game_ready_free_chocolates/OnTap>
+            uniform token info:id = "RCP.BehaviorsContainer"
+        }
+
+        def Preliminary_Behavior "OnTap"
+        {
+            rel actions = </im/game_ready_free_chocolates/OnTap/Action>
+            uniform bool exclusive
+            rel triggers = </im/game_ready_free_chocolates/OnTap/Trigger>
+
+            def Preliminary_Trigger "Trigger"
+            {
+                rel affectedObjects = </im/game_ready_free_chocolates>
+                token info:id = "TapGesture"
+            }
+
+            def Preliminary_Action "Action"
+            {
+                rel affectedObjects = None
+                rel animationLibraryKeyOverrideKey = </im/game_ready_free_chocolates/OnTap/Trigger>
+                token info:id = "PlayTimeline"
+                int loops = 0
+                int performCount = 1
+                token type = "serial"
+            }
+        }
+    }
+
+    over "cc0_match_box"
+    {
+        def RealityKitComponent "InputTarget"
+        {
+            uniform token info:id = "RealityKit.InputTarget"
+        }
+
+        def RealityKitComponent "Collider"
+        {
+            uint group = 1
+            uniform token info:id = "RealityKit.Collider"
+            uint mask = 4294967295
+            token type = "Default"
+
+            def RealityKitStruct "Shape"
+            {
+                float3 extent = (336.6964, 58.69098, 298.5448)
+                float height = 58.69098
+                float radius = 168.3482
+                token shapeType = "Capsule"
+
+                def RealityKitStruct "pose"
+                {
+                    float3 position = (-769.9059, -416.25095, -729.4552)
+                }
+            }
+        }
+
+        def RealityKitComponent "RCP_BehaviorsContainer"
+        {
+            rel behaviors = </im/cc0_match_box/OnTap>
+            uniform token info:id = "RCP.BehaviorsContainer"
+        }
+
+        def Preliminary_Behavior "OnTap"
+        {
+            rel actions = </im/cc0_match_box/OnTap/Action>
+            uniform bool exclusive
+            rel triggers = </im/cc0_match_box/OnTap/Trigger>
+
+            def Preliminary_Trigger "Trigger"
+            {
+                rel affectedObjects = </im/cc0_match_box>
+                token info:id = "TapGesture"
+            }
+
+            def Preliminary_Action "Action"
+            {
+                rel affectedObjects = None
+                rel animationLibraryKeyOverrideKey = </im/cc0_match_box/OnTap/Trigger>
+                token info:id = "PlayTimeline"
+                int loops = 0
+                int performCount = 1
+                token type = "serial"
+            }
+        }
+    }
+
+    over "free_low_poly_mining_assets"
+    {
+        def RealityKitComponent "InputTarget"
+        {
+            uniform token info:id = "RealityKit.InputTarget"
+        }
+
+        def RealityKitComponent "Collider"
+        {
+            uint group = 1
+            uniform token info:id = "RealityKit.Collider"
+            uint mask = 4294967295
+            token type = "Default"
+
+            def RealityKitStruct "Shape"
+            {
+                float3 extent = (1916.209, 699.7344, 1222.4434)
+                float height = 699.7344
+                float radius = 958.1045
+                token shapeType = "Capsule"
+
+                def RealityKitStruct "pose"
+                {
+                    float3 position = (2975.6042, 12671.83, -7830.0537)
+                }
+            }
+        }
+
+        def RealityKitComponent "RCP_BehaviorsContainer"
+        {
+            rel behaviors = </im/free_low_poly_mining_assets/OnTap>
+            uniform token info:id = "RCP.BehaviorsContainer"
+        }
+
+        def Preliminary_Behavior "OnTap"
+        {
+            rel actions = </im/free_low_poly_mining_assets/OnTap/Action>
+            uniform bool exclusive
+            rel triggers = </im/free_low_poly_mining_assets/OnTap/Trigger>
+
+            def Preliminary_Trigger "Trigger"
+            {
+                rel affectedObjects = </im/free_low_poly_mining_assets>
+                token info:id = "TapGesture"
+            }
+
+            def Preliminary_Action "Action"
+            {
+                rel affectedObjects = None
+                rel animationLibraryKeyOverrideKey = </im/free_low_poly_mining_assets/OnTap/Trigger>
+                token info:id = "PlayTimeline"
+                int loops = 0
+                int performCount = 1
+                token type = "serial"
+            }
+        }
+    }
+
+    over "Cylinder_002"
+    {
+        def RealityKitComponent "InputTarget"
+        {
+            uniform token info:id = "RealityKit.InputTarget"
+        }
+
+        def RealityKitComponent "Collider"
+        {
+            uint group = 1
+            uniform token info:id = "RealityKit.Collider"
+            uint mask = 4294967295
+            token type = "Default"
+
+            def RealityKitStruct "Shape"
+            {
+                float3 extent = (0.62540597, 0.62540597, 1.0897943)
+                float height = 0.62540597
+                float radius = 0.54489714
+                token shapeType = "Capsule"
+
+                def RealityKitStruct "pose"
+                {
+                    float3 position = (2.9802322e-8, -2.9802322e-8, 0.43770903)
+                }
+            }
+        }
+
+        def RealityKitComponent "RCP_BehaviorsContainer"
+        {
+            rel behaviors = </im/Cylinder_002/OnTap>
+            uniform token info:id = "RCP.BehaviorsContainer"
+        }
+
+        def Preliminary_Behavior "OnTap"
+        {
+            rel actions = </im/Cylinder_002/OnTap/Action>
+            uniform bool exclusive
+            rel triggers = </im/Cylinder_002/OnTap/Trigger>
+
+            def Preliminary_Trigger "Trigger"
+            {
+                rel affectedObjects = </im/Cylinder_002>
+                token info:id = "TapGesture"
+            }
+
+            def Preliminary_Action "Action"
+            {
+                rel affectedObjects = None
+                rel animationLibraryKeyOverrideKey = </im/Cylinder_002/OnTap/Trigger>
+                token info:id = "PlayTimeline"
+                int loops = 0
+                int performCount = 1
+                token type = "serial"
+            }
+        }
+    }
+
+    over "low_poly_stylized_game_items_poison"
+    {
+        def RealityKitComponent "InputTarget"
+        {
+            uniform token info:id = "RealityKit.InputTarget"
+        }
+
+        def RealityKitComponent "Collider"
+        {
+            uint group = 1
+            uniform token info:id = "RealityKit.Collider"
+            uint mask = 4294967295
+            token type = "Default"
+
+            def RealityKitStruct "Shape"
+            {
+                float3 extent = (593.57056, 609.50964, 603.4523)
+                float height = 609.50964
+                float radius = 301.72614
+                token shapeType = "Capsule"
+
+                def RealityKitStruct "pose"
+                {
+                    float3 position = (-8.059738, 58.10057, 3.633606)
+                }
+            }
+        }
+
+        def RealityKitComponent "RCP_BehaviorsContainer"
+        {
+            rel behaviors = </im/low_poly_stylized_game_items_poison/OnTap>
+            uniform token info:id = "RCP.BehaviorsContainer"
+        }
+
+        def Preliminary_Behavior "OnTap"
+        {
+            rel actions = </im/low_poly_stylized_game_items_poison/OnTap/Action>
+            uniform bool exclusive
+            rel triggers = </im/low_poly_stylized_game_items_poison/OnTap/Trigger>
+
+            def Preliminary_Trigger "Trigger"
+            {
+                rel affectedObjects = </im/low_poly_stylized_game_items_poison>
+                token info:id = "TapGesture"
+            }
+
+            def Preliminary_Action "Action"
+            {
+                rel affectedObjects = None
+                rel animationLibraryKeyOverrideKey = </im/low_poly_stylized_game_items_poison/OnTap/Trigger>
+                token info:id = "PlayTimeline"
+                int loops = 0
+                int performCount = 1
+                token type = "serial"
+            }
+        }
+    }
+
+    over "_materials"
+    {
+        over "glass"
+        {
+            token outputs:mtlx:surface
+            token outputs:realitykit:vertex
+        }
+
+        over "stool"
+        {
+            token outputs:mtlx:surface
+            token outputs:realitykit:vertex
+        }
+
+        over "table"
+        {
+            token outputs:mtlx:surface
+            token outputs:realitykit:vertex
+        }
+
+        over "base"
+        {
+            token outputs:mtlx:surface
+            token outputs:realitykit:vertex
+        }
+
+        over "stuff_001"
+        {
+            token outputs:mtlx:surface
+            token outputs:realitykit:vertex
+        }
+    }
 }
 
 def Xform "ParticleEmitter"
