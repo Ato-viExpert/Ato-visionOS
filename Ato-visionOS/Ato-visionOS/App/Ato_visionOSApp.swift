@@ -43,11 +43,5 @@ struct Ato_visionOSApp: App {
             }
         }
         .immersionStyle(selection: .constant(.full), in: .full)
-        
-        WindowGroup(id: "myVolumeWindow") {
-            VolumeWindowContentView() // 아래에서 정의할 볼륨 윈도우의 내용
-        }
-        .defaultSize(width: 0.5, height: 0.5, depth: 0.5, in: .meters)
-        .windowStyle(.volumetric) // 볼륨 윈도우 스타일 지정
     }
 }
