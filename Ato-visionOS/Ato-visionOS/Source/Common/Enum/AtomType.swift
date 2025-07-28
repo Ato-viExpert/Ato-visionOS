@@ -243,4 +243,56 @@ extension AtomType {
         ]
         return map[atomicNumber]
     }
+    
+    /// 원자기호로 AtomType 매칭
+    /// - Parameter symbol: 원자 기호 (예: "H", "O", "Na")
+    /// - Returns: AtomType 또는 nil
+    static func from(symbol: String) -> AtomType? {
+        return AtomType.allCases.first(where: { $0.symbol == symbol })
+    }
+}
+
+
+// MARK: - 화학식 생성 ElementCount에 넣기 위해 필요한 값
+extension AtomType {
+    /// 파울링 전기음성도
+    var electronegativity: Float {
+        switch self {
+        case .F: return 3.98
+        case .O: return 3.44
+        case .Cl: return 3.16
+        case .N: return 3.04
+        case .Br: return 2.96
+        case .I: return 2.66
+        case .S: return 2.58
+        case .C: return 2.55
+        case .P: return 2.19
+        case .H: return 2.20
+        case .Si: return 1.90
+        case .B: return 2.04
+        case .Be: return 1.57
+        case .Al: return 1.61
+        case .Mg: return 1.31
+        case .Na: return 0.93
+        case .K: return 0.82
+        case .Ca: return 1.00
+        case .Li: return 0.98
+        case .He, .Ne, .Ar: return 0.0
+        }
+    }
+    
+    /// 산의 조건에 따라 앞에 오는 H 여부
+    var isAcidHydrogen: Bool {
+        return self == .H
+    }
+    
+    /// 금속 여부 기반으로 양이온 여부
+    var isCation: Bool {
+        return [.Na, .K, .Ca, .Mg, .Li, .Be, .Al].contains(self)
+    }
+
+    /// 비금속 중 전형적인 음이온
+    var isAnion: Bool {
+        return [.Cl, .Br, .I, .O, .F, .S].contains(self)
+    }
 }

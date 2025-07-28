@@ -9,6 +9,10 @@ import SwiftUI
 
 // MARK: - ElementDetailView
 struct ElementDetailView: View {
+    @Environment(AppModel.self) private var appModel
+    private var moleculeManager: MoleculeManager {
+        appModel.moleculeManager
+    }
     
     @Binding var elementDetail: ElementDetail?
     
@@ -36,7 +40,7 @@ struct ElementDetailView: View {
             
             // 상세 내용 표시
             
-//            Group {
+            //            Group {
             switch elementDetail {
             case .atom(let atom):
                 AtomDetailView(atom: atom, width: width, height: height)
@@ -52,25 +56,37 @@ struct ElementDetailView: View {
                         .scaledToFit()
                         .frame(width: width * 0.1)
                         .foregroundStyle(.white.opacity(0.3))
-
+                    
                     Text("원소 또는 분자를 선택해주세요.")
                         .font(.title2)
                         .fontWeight(.semibold)
                         .foregroundStyle(.white.opacity(0.4))
                         .multilineTextAlignment(.center)
                         .padding()
-
+                    
                     Spacer()
                 }
             }
-//            }
-//            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            //            }
+            //            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .padding()
+        .onChange(of: moleculeManager.selectedMolecule) { newValue in
+            if let selected = newValue {
+                if let matched = allDescriptions.first(where: { $0.symbol == selected.compositionSymbol.subscripted }) {
+                    print("✅ 일치하는 분자: \(matched.name)")
+                    selectedMolecule = matched
+                    elementDetail = .molecule(matched)
+                } else {
+                    print("⚠️ 일치하는 분자가 없습니다.")
+                }
+            }
+        }
 
     }
 }
 
+// TODO: - 이넘 파일로 이동 필요
 enum ElementDetail {
     case atom(DetailAtomModel)
     case molecule(DetailMoleculeModel)

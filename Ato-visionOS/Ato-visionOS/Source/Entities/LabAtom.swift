@@ -15,6 +15,7 @@ struct Bond{
 }
 
 class LabAtom: Atom {
+    
     // MARK: - Propteries
     
     public let atomId = UUID() /// 원자 고유 번호(동일 원자들과 결합시 구분)
@@ -249,5 +250,13 @@ extension LabAtom {
                 try? await Task.sleep(nanoseconds: 16_000_000)
             }
         }
+    }
+}
+
+// MARK: - Equatable
+
+extension LabAtom: Equatable {
+    static func == (lhs: LabAtom, rhs: LabAtom) -> Bool {
+        return lhs.atomId == rhs.atomId
     }
 }
