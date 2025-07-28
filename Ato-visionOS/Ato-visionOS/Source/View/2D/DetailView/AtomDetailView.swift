@@ -41,13 +41,13 @@ struct AtomDetailView: View {
                     .multilineTextAlignment(.leading)
                     .foregroundColor(.white)
                 Divider()
+                    .background(.white.opacity(0.4))
                     .frame(width: width * 0.66)
             }
             .frame(height: height * 0.1)
             
             VStack(alignment: .center) {
                 
-                // MARK: - 원소 + 설명 텍스트
                 if let atomType = AtomType(rawValue: atom.symbol) {
                     Atom2D(atomType: atomType, size: width * 0.3)
                 } else {

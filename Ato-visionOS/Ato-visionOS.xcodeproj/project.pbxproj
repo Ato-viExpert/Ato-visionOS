@@ -41,6 +41,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9409C8922E36763500F072AB /* RealityFoundation.framework in Frameworks */,
 				2D4BC4BD2E264DDC00BB30F0 /* RealityKitContent in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
