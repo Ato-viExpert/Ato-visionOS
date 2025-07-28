@@ -49,7 +49,7 @@ class LabMolecule{
     
     func setInteractionMode(for tool: ToolType) {
         switch tool {
-        case .bond:
+        case .bond, .dissociate:
             // 개별 원자 클릭 허용
             atoms.forEach { atom in
                 atom.entity?.components.set(InputTargetComponent())

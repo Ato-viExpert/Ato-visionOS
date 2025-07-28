@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@Observable
 final class MoleculeManager {
     
     // MARK: - Properties
@@ -14,13 +15,13 @@ final class MoleculeManager {
     private(set) var molecules: [LabMolecule] = []
     
     // MARK: - Public Methods
-    
+
     /// 전체 분자 반환
     /// - Returns: [LabMolecule]
     func allMoleculesList() -> [LabMolecule] {
         return molecules
     }
-
+    
     /// 주어진 원자를 포함하는 분자를 찾아 반환합니다.
     /// - Parameter atom: 해당 atom을 포함한 분자를 찾습니다.
     /// - Returns: atom이 속한 LabMolecule 또는 nil
@@ -61,21 +62,20 @@ final class MoleculeManager {
             return nil
         }
         
-
         atomA.addBond(Bond(atomUUID: atomB.atomId, bondType: bondOrder))
         atomB.addBond(Bond(atomUUID: atomA.atomId, bondType: bondOrder))
-
+        
         if atomA.moleculeId == nil && atomB.moleculeId == nil {
             let newUUID = UUID()
             atomA.setMoleculeId(newUUID)
             atomB.setMoleculeId(newUUID)
-
+            
             let molecule = LabMolecule(moleculeId: newUUID, atoms: [atomA, atomB])
             molecule.updateStableStatus(checkMoleculeStable(molecule: molecule))
-            molecules.append(molecule)
+            register(molecule)
             return molecule
         }
-
+        
         // atomA는 고립, atomB는 분자 소속 → atomA를 atomB 분자로
         if atomA.moleculeId == nil, let moleculeId = atomB.moleculeId,
            let molecule = findMoleculeByUUID(moleculeId) {
@@ -84,7 +84,7 @@ final class MoleculeManager {
             molecule.updateStableStatus(checkMoleculeStable(molecule: molecule))
             return molecule
         }
-
+        
         // atomB는 고립, atomA는 분자 소속 → atomB를 atomA 분자로
         if atomB.moleculeId == nil, let moleculeId = atomA.moleculeId,
            let molecule = findMoleculeByUUID(moleculeId) {
@@ -93,7 +93,7 @@ final class MoleculeManager {
             molecule.updateStableStatus(checkMoleculeStable(molecule: molecule))
             return molecule
         }
-
+        
         // 둘 다 분자 소속이고, 다른 분자일 경우 → 병합
         if let uuidA = atomA.moleculeId,
            let uuidB = atomB.moleculeId,
@@ -101,9 +101,10 @@ final class MoleculeManager {
            let moleculeA = findMoleculeByUUID(uuidA),
            let moleculeB = findMoleculeByUUID(uuidB) {
             changeMoleculeState(moleculeA: moleculeA, moleculeB: moleculeB)
+            unregister(moleculeB)
             return moleculeA
         }
-
+        
         // 동일한 분자 소속이면 안정성만 갱신
         if let uuid = atomA.moleculeId,
            uuid == atomB.moleculeId,
@@ -111,7 +112,7 @@ final class MoleculeManager {
             molecule.updateStableStatus(checkMoleculeStable(molecule: molecule))
             return molecule
         }
-
+        
         return nil
     }
     
@@ -125,22 +126,39 @@ final class MoleculeManager {
         guard atomA.unpairedElectrons > 0, atomB.unpairedElectrons > 0 else {
             return 0
         }
-
+        
         // 조건 2: 현재 전자 수가 옥텟 이상이면 더 이상 결합 불가
         guard atomA.currentElectronCount < atomA.maxElectronCount,
-            atomB.currentElectronCount < atomB.maxElectronCount else {
+              atomB.currentElectronCount < atomB.maxElectronCount else {
             return 0
         }
         
         let needA = atomA.maxElectronCount - atomA.currentElectronCount
         let needB = atomB.maxElectronCount - atomB.currentElectronCount
-
+        
         let maxPossibleBond = min(atomA.unpairedElectrons, atomB.unpairedElectrons)
         let requiredBond = min(needA, needB, 3)
-
+        
         return min(maxPossibleBond, requiredBond)
     }
-
+    
+    /// 주어진 원자 리스트에서 결합된 원자 그룹들을 분리하여 반환합니다.
+    /// DFS를 이용해 연결된 원자들끼리 하나의 군집으로 묶습니다.
+    /// - Parameter atoms: 분할할 전체 원자 배열
+    /// - Returns: 각 연결된 군집을 원소로 가지는 2차원 배열 (ex. [[LabAtom], [LabAtom, LabAtom], ...])
+    func divideMolecule(atoms: [LabAtom]) -> [[LabAtom]] {
+        var visited = Set<UUID>()
+        var result: [[LabAtom]] = []
+        
+        for atom in atoms {
+            if visited.contains(atom.atomId) { continue }
+            var cluster: [LabAtom] = []
+            dfs(atom, atoms, &visited, &cluster)
+            result.append(cluster)
+        }
+        
+        return result
+    }
     
     // MARK: - Private Methods
     
@@ -154,7 +172,7 @@ final class MoleculeManager {
         atomA.addBond(Bond(atomUUID: atomB.atomId, bondType: bond))
         atomB.addBond(Bond(atomUUID: atomA.atomId, bondType: bond))
     }
-
+    
     /// 원자의 분자 고유 번호 변화
     /// - Parameters:
     ///   - atom: 원자
@@ -162,7 +180,7 @@ final class MoleculeManager {
     private func changeAtomUUID(atom: LabAtom, moleculeId: UUID) {
         atom.setMoleculeId(moleculeId)
     }
-
+    
     /// 분자 안정성 판단
     /// - Parameter molecule: 분자
     /// - Returns: 분자의 안전성 여부 반환
@@ -174,7 +192,7 @@ final class MoleculeManager {
         }
         return true
     }
-
+    
     /// 분자 생성(원자 2개가 결합할 경우)
     /// - Parameters:
     ///   - atomA: 원자 A
@@ -196,7 +214,7 @@ final class MoleculeManager {
         
         return molecule
     }
-
+    
     /// 분자 상태 변화(기존 분자에 새로운 원자 추가)
     /// - Parameters:
     ///   - atom: 원자, 분자
@@ -206,7 +224,7 @@ final class MoleculeManager {
         molecule.addAtom(atom)
         molecule.updateStableStatus(checkMoleculeStable(molecule: molecule))
     }
-
+    
     /// 분자 상태 변화(분자 두개 한개로 합치기)
     /// - Parameters:
     ///   - moleculeA: 분자, 분자
@@ -218,6 +236,23 @@ final class MoleculeManager {
         }
         
         moleculeA.updateStableStatus(checkMoleculeStable(molecule: moleculeA))
+    }
+    
+    /// 깊이 우선 탐색을 통해 연결된 원자들을 하나의 군집(cluster)으로 수집합니다.
+    /// - Parameters:
+    ///   - atom: 탐색을 시작할 현재 원자
+    ///   - atoms: 전체 원자 리스트
+    ///   - visited: 이미 방문한 원자의 ID 집합
+    ///   - cluster: 현재 군집에 포함된 원자들을 누적할 배열
+    private func dfs(_ atom: LabAtom, _ atoms: [LabAtom], _ visited: inout Set<UUID>, _ cluster: inout [LabAtom]) {
+        visited.insert(atom.atomId)
+        cluster.append(atom)
+        for bond in atom.bonds {
+            if let next = atoms.first(where: { $0.atomId == bond.atomUUID }),
+               !visited.contains(next.atomId) {
+                dfs(next, atoms, &visited, &cluster)
+            }
+        }
     }
     
     /// 결합 불가능한 경우 처리

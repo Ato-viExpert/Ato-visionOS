@@ -30,10 +30,15 @@ final class AtomManager {
     /// - Parameter entityName: 원자 이름 String 값
     /// - Returns: LabAtom
     func findAtom(by entityName: String) -> LabAtom? {
-        guard let uuid = UUID(uuidString: entityName) else { return nil }
-        return atoms[uuid]
+        let normalizedName: String
+        if entityName.hasPrefix("magnified_") {
+            normalizedName = String(entityName.dropFirst("magnified_".count))
+        } else {
+            normalizedName = entityName
+        }
+        return atoms.values.first(where: { $0.atomId.uuidString == normalizedName })
     }
-    
+
     /// 전체 원자 반환
     /// - Returns: [LabAtom]
     func allAtoms() -> [LabAtom] {

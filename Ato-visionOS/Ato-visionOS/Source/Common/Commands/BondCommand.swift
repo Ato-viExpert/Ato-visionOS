@@ -17,6 +17,7 @@ final class BondCommand: Command {
     private let atomA: LabAtom
     private let atomB: LabAtom
     private let bondOrder: Int
+    private let atomManager: AtomManager
     private let moleculeManager: MoleculeManager
     private var originalPositions: [UUID: SIMD3<Float>] = [:]
     
@@ -27,11 +28,13 @@ final class BondCommand: Command {
     /// - Parameters:
     ///   - atomA: 결합의 기준이 되는 첫 번째 원자
     ///   - atomB: 결합할 두 번째 원자
+    ///   - atomManager: undo로 분자 해제 시 원자 재등록하는 원자 관리자
     ///   - moleculeManager: 결합 로직 및 분자 생성을 담당하는 분자 관리자
-    init(atomA: LabAtom, atomB: LabAtom, moleculeManager: MoleculeManager) {
+    init(atomA: LabAtom, atomB: LabAtom, atomManager: AtomManager,moleculeManager: MoleculeManager) {
         self.atomA = atomA
         self.atomB = atomB
         self.bondOrder = moleculeManager.predictBondOrder(atomA: atomA, atomB: atomB)
+        self.atomManager = atomManager
         self.moleculeManager = moleculeManager
     }
     
@@ -43,6 +46,7 @@ final class BondCommand: Command {
     /// - Throws: 오류 발생 시 throw됩니다.
     func execute(in content: RealityViewContent) async throws -> CommandResult {
         let molecule = moleculeManager.createBondedAtoms(atomA: atomA, atomB: atomB)
+        
         
         if let moleculeEntity = molecule?.entity {
             let bounds = await moleculeEntity.visualBounds(relativeTo: nil)
@@ -57,6 +61,7 @@ final class BondCommand: Command {
 
         if let moleculeEntity = molecule?.entity {
             content.add(moleculeEntity)
+            
         }
         
         if let molecule = molecule {
@@ -73,6 +78,7 @@ final class BondCommand: Command {
         let placedEntities = visited.compactMap { id in
             molecule?.atoms.first(where: { $0.atomId == id })?.entity
         }
+        
         return .entities(placedEntities)
     }
     
@@ -87,30 +93,60 @@ final class BondCommand: Command {
         var restoredEntities: [Entity] = []
         
         if let molecule = moleculeManager.findMolecule(containing: atomA) {
-            for atom in molecule.atoms {
-                if let entity = atom.entity,
-                   let original = originalPositions[atom.atomId] {
+            await molecule.entity?.removeFromParent()
+            moleculeManager.unregister(molecule)
+            
+            let dividedClusters = moleculeManager.divideMolecule(atoms: molecule.atoms)
+            
+            for atoms in dividedClusters {
+                if atoms.count == 1 {
+                    let atom = atoms[0]
                     
-                    await MainActor.run {
-                        content.add(entity)
-                        entity.setPosition(original, relativeTo: nil)
+                    if let entity = atom.entity,
+                       let original = originalPositions[atom.atomId] {
+                        await MainActor.run {
+                            if entity.components[InputTargetComponent.self] == nil {
+                                entity.components.set(InputTargetComponent())
+                            }
+                            
+                            let bounds = entity.visualBounds(relativeTo: nil)
+                            let shape = ShapeResource.generateSphere(radius: bounds.extents.x / 2)
+                            entity.components.set(CollisionComponent(shapes: [shape]))
+                            
+                            content.add(entity)
+                            entity.setPosition(original, relativeTo: nil)
+                        }
+                        
+                        restoredEntities.append(entity)
+                    }
+                } else {
+                    let newId = UUID()
+                    
+                    for atom in atoms {
+                        atom.setMoleculeId(newId)
                     }
                     
-                    _ = await entity.position(relativeTo: nil)
-                    restoredEntities.append(entity)
+                    let newMolecule = LabMolecule(moleculeId: newId, atoms: atoms)
+                    
+                    moleculeManager.register(newMolecule)
+                    
+                    if let moleculeEntity = newMolecule.entity {
+                        await MainActor.run {
+                            let bounds = moleculeEntity.visualBounds(relativeTo: nil)
+                            let shape = ShapeResource.generateBox(size: bounds.extents)
+                            moleculeEntity.components.set(CollisionComponent(shapes: [shape]))
+                            moleculeEntity.components.set(InputTargetComponent())
+                            content.add(moleculeEntity)
+                        }
+                        
+                        restoredEntities.append(moleculeEntity)
+                    }
                 }
             }
         }
-        
-        if let molecule = moleculeManager.findMolecule(containing: atomA),
-           let moleculeEntity = molecule.entity {
-            await moleculeEntity.removeFromParent()
-        }
-        
         return .entities(restoredEntities)
     }
 
-    
     // MARK: - Private Methods
     
     /// 결합된 원자들의 위치를 재귀적으로 배치합니다.
