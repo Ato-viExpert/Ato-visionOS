@@ -39,7 +39,7 @@ struct AtomDetailView: View {
                         .weight(.bold)
                     )
                     .multilineTextAlignment(.leading)
-                    .foregroundColor(.white)
+                    .foregroundStyle(.white)
                 Divider()
                     .background(.white.opacity(0.4))
                     .frame(width: width * 0.66)
@@ -58,7 +58,7 @@ struct AtomDetailView: View {
             VStack(alignment: .leading) {
                 Text(atom.description)
                     .font(Font.custom("SF Pro Display", size: width * 0.04))
-                    .foregroundColor(.white)
+                    .foregroundStyle(.white)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .frame(minHeight: height * 0.3)
                 Spacer()

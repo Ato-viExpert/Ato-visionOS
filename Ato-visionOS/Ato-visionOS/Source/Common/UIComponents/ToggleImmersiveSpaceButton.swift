@@ -40,6 +40,7 @@ struct ToggleImmersiveSpaceButton: View {
         )) {
             Text("가상 환경")
         }
+        .labelsHidden()
         .toggleStyle(.switch)
         .tint(.blue)
         .disabled(appModel.immersiveSpaceState == .inTransition)

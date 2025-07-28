@@ -29,10 +29,6 @@ struct ToolbarView: View {
             }
         }
         .frame(width: max(width * 0.42, 610), height: max(height * 0.08, 65))
-//        .onChange(of: width) {
-//            print("width * 0.42:\(width * 0.42)") //617.8199999999999
-//            print("height * 0.08:\(height * 0.08)")//66
-//        }
         .bg()
         .clipShape(Capsule())
 
