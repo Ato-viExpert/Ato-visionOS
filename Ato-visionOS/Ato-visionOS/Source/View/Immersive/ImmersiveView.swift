@@ -69,19 +69,8 @@ struct ImmersiveView: View {
             TapGesture()
                 .targetedToAnyEntity()
                 .onEnded { value in
-                    let tappedEntity = value.entity
-                    
-                    // 탭된 Entity의 이름이 탭 가능한 목록에 있는지 확인
-                    if tappableEntityNames.contains(tappedEntity.name) {
-                        print("✅ Entity '\(tappedEntity.name)' tapped via SwiftUI Gesture!")
-                        
-                        openWindow(id: "myVolumeWindow")
-//                        let sphere = ModelEntity(mesh: .generateSphere(radius: 0.03), materials: [SimpleMaterial(color: .blue, isMetallic: true)])
-//                        sphere.position = [0, 0.3, 0]
-//                        tappedEntity.addChild(sphere)
-                    } else {
-                        print("Tapped entity: \(tappedEntity.name) (Not a target entity)")
-                    }
+
+                        print("✅ 클릭됨")
                 }
         )
 
