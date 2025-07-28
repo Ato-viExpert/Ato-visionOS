@@ -58,15 +58,19 @@ class LabMolecule {
             // 개별 원자 클릭 허용
             atoms.forEach { atom in
                 atom.entity?.components.set(InputTargetComponent())
+                atom.entity?.components.set(HoverEffectComponent())
             }
             self.entity?.components.remove(InputTargetComponent.self)
+            self.entity?.components.remove(HoverEffectComponent.self)
             
         default:
             // 전체 분자 클릭 허용 (원자는 막기)
             atoms.forEach { atom in
                 atom.entity?.components.remove(InputTargetComponent.self)
+                atom.entity?.components.remove(HoverEffectComponent.self)
             }
             self.entity?.components.set(InputTargetComponent())
+            self.entity?.components.set(HoverEffectComponent())
         }
     }
 }
