@@ -27,7 +27,7 @@ struct ImmersiveView: View {
     var body: some View {
         RealityView { content in
             // 임머시브 콘텐츠 엔티티 로드
-            if let immersiveContentEntity = try? await Entity(named: "ImmersiveSpace", in: realityKitContentBundle) {
+            if let immersiveContentEntity = try? await Entity(named: "FinalImmersive", in: realityKitContentBundle) {
                 content.add(immersiveContentEntity)
 
                 

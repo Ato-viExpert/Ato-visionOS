@@ -52,12 +52,12 @@ final class BondCommand: Command {
             let shape = await ShapeResource.generateBox(size: bounds.extents)
             await moleculeEntity.components.set(CollisionComponent(shapes: [shape]))
             await moleculeEntity.components.set(InputTargetComponent())
-            
+            await moleculeEntity.components.set(HoverEffectComponent())
             content.add(moleculeEntity)
         }
         
         guard let _ = atomA.entity, let _ = atomB.entity else { return .none }
-
+        
         if let moleculeEntity = molecule?.entity {
             content.add(moleculeEntity)
         }
@@ -107,6 +107,10 @@ final class BondCommand: Command {
                                 entity.components.set(InputTargetComponent())
                             }
                             
+                            if !entity.components.has(HoverEffectComponent.self) {
+                                entity.components.set(HoverEffectComponent())
+                            }
+                            
                             let bounds = entity.visualBounds(relativeTo: nil)
                             let shape = ShapeResource.generateSphere(radius: bounds.extents.x / 2)
                             entity.components.set(CollisionComponent(shapes: [shape]))
@@ -129,14 +133,12 @@ final class BondCommand: Command {
                     moleculeManager.register(newMolecule)
                     
                     if let moleculeEntity = newMolecule.entity {
+                        await generateCollisionComponent(for: moleculeEntity, atoms: molecule.atoms)
                         await MainActor.run {
-                            let bounds = moleculeEntity.visualBounds(relativeTo: nil)
-                            let shape = ShapeResource.generateBox(size: bounds.extents)
-                            moleculeEntity.components.set(CollisionComponent(shapes: [shape]))
                             moleculeEntity.components.set(InputTargetComponent())
+                            moleculeEntity.components.set(HoverEffectComponent())
                             content.add(moleculeEntity)
                         }
-                        
                         restoredEntities.append(moleculeEntity)
                     }
                 }
@@ -144,7 +146,7 @@ final class BondCommand: Command {
         }
         return .entities(restoredEntities)
     }
-
+    
     // MARK: - Private Methods
     
     /// 결합된 원자들의 위치를 재귀적으로 배치합니다.
@@ -191,5 +193,37 @@ final class BondCommand: Command {
             }
             
         }
+    }
+    
+    func generateCollisionComponent(for moleculeEntity: Entity, atoms: [LabAtom]) async -> CollisionComponent {
+        var minPoint = SIMD3<Float>(repeating: .greatestFiniteMagnitude)
+        var maxPoint = SIMD3<Float>(repeating: -.greatestFiniteMagnitude)
+        
+        for atom in atoms {
+            guard let entity = atom.entity else { continue }
+            let worldPosition = await entity.position(relativeTo: moleculeEntity)
+            let radius = atom.modelScale
+            
+            let localMin = worldPosition - SIMD3<Float>(repeating: radius)
+            let localMax = worldPosition + SIMD3<Float>(repeating: radius)
+            
+            minPoint = simd_min(minPoint, localMin)
+            maxPoint = simd_max(maxPoint, localMax)
+        }
+        
+        let extents = maxPoint - minPoint
+        let center = (minPoint + maxPoint) / 2
+        let shape = await ShapeResource.generateBox(size: extents + SIMD3<Float>(repeating: 0.01))
+        
+        let colliderEntity = await ModelEntity()
+        
+        await MainActor.run {
+            colliderEntity.components.set(CollisionComponent(shapes: [shape]))
+            colliderEntity.transform.translation = center
+            colliderEntity.components.set(OpacityComponent(opacity: 0))
+            
+            moleculeEntity.addChild(colliderEntity)
+        }
+        return await colliderEntity.components[CollisionComponent.self]!
     }
 }

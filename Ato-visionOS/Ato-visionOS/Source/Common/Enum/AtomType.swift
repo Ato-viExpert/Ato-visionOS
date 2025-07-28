@@ -142,28 +142,28 @@ enum AtomType: String, CaseIterable {
     /// 원자 크기
     var modelScale: Float {
         switch self {
-        case .H: return 0.700
-        case .He: return 0.7875
-        case .Li: return 1.050
-        case .Be: return 1.015
-        case .B: return 0.9625
-        case .C: return 0.910
-        case .N: return 0.8925
-        case .O: return 0.875
-        case .F: return 0.875
-        case .Ne: return 0.840
-        case .Na: return 1.1375
-        case .Mg: return 1.085
-        case .Al: return 1.0675
-        case .Si: return 1.050
-        case .P: return 1.0325
-        case .S: return 1.015
-        case .Cl: return 0.9975
-        case .Ar: return 0.9625
-        case .K: return 1.225
-        case .Ca: return 1.190
-        case .Br: return 1.260
-        case .I: return 1.365
+        case .H: return 1.500
+        case .He: return 1.689
+        case .Li: return 2.250
+        case .Be: return 2.174
+        case .B: return 2.061
+        case .C: return 1.948
+        case .N: return 1.911
+        case .O: return 1.875
+        case .F: return 1.875
+        case .Ne: return 1.800
+        case .Na: return 2.446
+        case .Mg: return 2.321
+        case .Al: return 2.286
+        case .Si: return 2.250
+        case .P: return 2.214
+        case .S: return 2.174
+        case .Cl: return 2.138
+        case .Ar: return 2.061
+        case .K: return 2.625
+        case .Ca: return 2.554
+        case .Br: return 2.700
+        case .I: return 2.928
         }
     }
     
