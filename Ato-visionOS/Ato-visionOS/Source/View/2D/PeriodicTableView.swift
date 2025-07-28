@@ -65,7 +65,7 @@ struct PeriodicTableView: View {
 //        let buttonHeightSpacing: CGFloat = height * 0.01
         
         VStack {
-            
+            ToggleImmersiveSpaceButton()
             // MARK: - 타이틀 및 설명
             
             Spacer(minLength: 50)
