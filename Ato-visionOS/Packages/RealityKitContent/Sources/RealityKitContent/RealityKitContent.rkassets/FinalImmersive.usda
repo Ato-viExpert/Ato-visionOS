@@ -97,6 +97,139 @@ def "im" (
             }
         }
     }
+
+    def "SkySphere" (
+        active = true
+        prepend references = @SkySphere.usdz@
+    )
+    {
+        quatf xformOp:orient = (0.70710677, 0.70710677, 0, 0)
+        float3 xformOp:scale = (1.2, 1.2, 1.2)
+        float3 xformOp:translate = (0, 38, 20)
+
+        over "SkySphere_mat"
+        {
+            asset inputs:SkySphere_Texture = @prev.jpg@
+        }
+    }
+
+    def Xform "ChannelAudio"
+    {
+        def RealityKitComponent "ChannelAudio" (
+            active = false
+        )
+        {
+            float gain = -52.097004
+            uniform token info:id = "RealityKit.ChannelAudio"
+        }
+    }
+
+    def RealityKitAudioFile "New_Audio_File"
+    {
+        uniform asset file = @bgm-blues-guitar-loop-192099.mp3@
+        uniform bool shouldLoop = 1
+        uniform bool shouldRandomizeStartTime = 1
+    }
+
+    def Xform "ChannelAudio2"
+    {
+        def RealityKitComponent "ChannelAudio" (
+            active = false
+        )
+        {
+            float gain = -29.037048
+            uniform token info:id = "RealityKit.ChannelAudio"
+        }
+    }
+
+    def RealityKitAudioFile "New_Audio_File2"
+    {
+        uniform asset file = @birds-nature-relax-sounds-110839.mp3@
+        uniform bool shouldLoop = 1
+        uniform bool shouldRandomizeStartTime = 1
+    }
+
+    def Xform "PointLight"
+    {
+        float3 xformOp:translate = (17.07395, -0.0000013410918, 96.66629)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def RealityKitComponent "PointLight"
+        {
+            token info:id = "RealityKit.PointLight"
+            float intensity = 16000
+        }
+    }
+
+    def Xform "DirectionalLight"
+    {
+        float3 xformOp:translate = (0.23256096, 0.000010029676, 68.738525)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def RealityKitComponent "DirectionalLight"
+        {
+            token info:id = "RealityKit.DirectionalLight"
+            float intensity = 16000
+
+            def RealityKitStruct "Shadow"
+            {
+            }
+        }
+    }
+
+    def Xform "SpotLight3" (
+        customData = {
+            float3 rotationEulerHint = (0, -0.34906587, 0)
+        }
+    )
+    {
+        quatf xformOp:orient = (0.9848077, 0, -0.17364818, 0)
+        float3 xformOp:translate = (-45.37024, -0.0000014416191, 92.71605)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def RealityKitComponent "SpotLight"
+        {
+            token info:id = "RealityKit.SpotLight"
+            float intensity = 4000
+
+            def RealityKitStruct "Shadow"
+            {
+            }
+        }
+    }
+
+    def Xform "SpotLight" (
+        customData = {
+            float3 rotationEulerHint = (0, 0.52359885, 0)
+        }
+    )
+    {
+        quatf xformOp:orient = (0.9659258, 0, 0.25881904, 0)
+        float3 xformOp:translate = (-23.53686, -0.0000012894241, 53.82501)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def RealityKitComponent "SpotLight"
+        {
+            token info:id = "RealityKit.SpotLight"
+            float intensity = 4000
+
+            def RealityKitStruct "Shadow"
+            {
+            }
+        }
+    }
+
+    def Xform "PointLight2"
+    {
+        float3 xformOp:translate = (-0.00004793462, -57.446728, 22.572199)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def RealityKitComponent "PointLight"
+        {
+            token info:id = "RealityKit.PointLight"
+            float intensity = 16000
+        }
+    }
 }
 
 def Xform "ParticleEmitter"
@@ -193,26 +326,6 @@ def Xform "ParticleEmitter"
     }
 }
 
-def Xform "DirectionalLight"
-{
-    quatf xformOp:orient = (0.70710677, -0.70710677, 0, 0)
-    float3 xformOp:scale = (1, 1, 1)
-    float3 xformOp:translate = (-0.80038214, 168.07729, -3.2856865)
-    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
-
-    def RealityKitComponent "DirectionalLight"
-    {
-        float3 color = (1, 0.87788624, 0.70738816)
-        token info:id = "RealityKit.DirectionalLight"
-        float intensity = 7145.708
-
-        def RealityKitStruct "Shadow"
-        {
-            bool isEnabled = 1
-        }
-    }
-}
-
 def Xform "SpotLight" (
     customData = {
         float3 rotationEulerHint = (-0.5235988, 0.34906587, -1.5857486e-8)
@@ -221,7 +334,7 @@ def Xform "SpotLight" (
 {
     quatf xformOp:orient = (0.9512512, -0.254887, 0.16773126, 0.044943452)
     float3 xformOp:scale = (0.9999999, 0.9999999, 0.9999999)
-    float3 xformOp:translate = (48.485428, 148.83911, 50.973175)
+    float3 xformOp:translate = (47.73429, 155.94867, 46.878395)
     uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
     def RealityKitComponent "SpotLight"
