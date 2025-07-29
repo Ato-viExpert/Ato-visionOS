@@ -11,18 +11,25 @@ def "im" (
     references = @im.usdz@
 )
 {
+    reorder nameChildren = ["Cube_004", "stylized_medieval_castle_room", "_materials", "Cylinder_151_coin_0", "free_low_poly_mining_assets", "stylized_medieval_castle_room_001", "cc0_match_box", "Cube_003", "game_ready_free_chocolates", "Cylinder_076_coin_0", "low_poly_stylized_game_items_poison", "Light", "Cylinder_168_coin_0", "Cylinder_044_coin_0", "Cube_002", "Cylinder_002", "cc0_match", "Camera", "env_light", "SkySphere", "ChannelAudio", "New_Audio_File", "ChannelAudio2", "New_Audio_File2", "PointLight", "DirectionalLight", "SpotLight3", "SpotLight", "PointLight2", "ice"]
     quatf xformOp:orient = (0.70710677, -0.70710677, 0, 0)
     float3 xformOp:scale = (1, 1, 1)
     float3 xformOp:translate = (0, 90, -5.587935e-7)
     uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
-    over "Cube_003"
+    over "Cube_003" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
     {
+        rel material:binding = None (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+
         over "Cube_002" (
             prepend apiSchemas = ["MaterialBindingAPI"]
         )
         {
-            rel material:binding = </im/Material> (
+            rel material:binding = </im/ice> (
                 bindMaterialAs = "weakerThanDescendants"
             )
         }
@@ -88,7 +95,7 @@ def "im" (
             prepend apiSchemas = ["MaterialBindingAPI"]
         )
         {
-            rel material:binding = </im/Material> (
+            rel material:binding = </im/ice> (
                 bindMaterialAs = "weakerThanDescendants"
             )
         }
@@ -154,7 +161,7 @@ def "im" (
             prepend apiSchemas = ["MaterialBindingAPI"]
         )
         {
-            rel material:binding = </im/Material> (
+            rel material:binding = </im/ice> (
                 bindMaterialAs = "weakerThanDescendants"
             )
         }
@@ -246,7 +253,7 @@ def "im" (
 
     def "SkySphere" (
         active = true
-        prepend references = @SkySphere.usdz@
+        references = @SkySphere.usdz@
     )
     {
         quatf xformOp:orient = (0.70710677, 0.70710677, 0, 0)
@@ -697,6 +704,25 @@ def "im" (
         {
             token outputs:mtlx:surface
             token outputs:realitykit:vertex
+        }
+    }
+
+    def Material "ice"
+    {
+        token outputs:mtlx:surface
+        token outputs:realitykit:vertex
+        token outputs:surface.connect = </im/ice/UsdPreviewSurface.outputs:surface>
+
+        def Shader "UsdPreviewSurface"
+        {
+            uniform token info:id = "UsdPreviewSurface"
+            color3f inputs:diffuseColor = (0.7381629, 0.7381629, 0.7381629) (
+                colorSpace = "srgb_displayp3"
+            )
+            color3f inputs:emissiveColor = (0.2728062, 0.20530286, 0.22319025) (
+                colorSpace = "srgb_displayp3"
+            )
+            token outputs:surface
         }
     }
 }
