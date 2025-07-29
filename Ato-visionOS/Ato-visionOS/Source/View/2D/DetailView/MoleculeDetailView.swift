@@ -30,10 +30,10 @@ struct MoleculeDetailView: View {
             .frame(height: height * 0.1)
             
             VStack(alignment: .center) {
-            
-                Text("분자식: \(molecule.symbol)")
-                    .font(.subheadline)
-                
+                Image("\(molecule.id)")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: width * 0.4, height: height * 0.2)
             }
             VStack(alignment: .leading) {
                 Text(molecule.description)
@@ -48,4 +48,13 @@ struct MoleculeDetailView: View {
         .padding(.top, height * 0.05)
         .padding(.horizontal, width * 0.12)
     }
+}
+
+
+#Preview {
+    MoleculeDetailView(
+        molecule: DetailMoleculeMockData.allDescriptions[17],
+        width: 600,
+        height: 800
+    )
 }
