@@ -21,11 +21,9 @@ struct PeriodicTableView: View {
     @Binding var selectedAtom: DetailAtomModel?
     
     // MARK: - Properties
-//    let elementsGrid: [[DetailAtomModel?]]
     let width: CGFloat
     let height: CGFloat
     
-    //    @Environment(AppModel.self) private var appModel
     
     // MARK: - Init
     
@@ -34,12 +32,10 @@ struct PeriodicTableView: View {
     ///   - elementsGrid: 2차원 원소 배열(주기율표 데이터)
     init(
         selectedAtom: Binding<DetailAtomModel?>,
-//        elementsGrid: [[DetailAtomModel?]],
         width: CGFloat,
         height: CGFloat
     ) {
         self._selectedAtom = selectedAtom
-//        self.elementsGrid = elementsGrid
         self.width = width
         self.height = height
         
@@ -49,7 +45,7 @@ struct PeriodicTableView: View {
     var body: some View {
         
         VStack {
-            Spacer(minLength: 50)
+            Spacer(minLength: 100)
             HStack {
                 Spacer(minLength: 200)
                 Text("가상 환경")
@@ -62,7 +58,11 @@ struct PeriodicTableView: View {
             ElementsGridView(width: width, height: height, selectedAtom: $selectedAtom)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding(width * 0.04)
+        .padding(width * 0.05)
+        .onAppear(){
+            print("PeriodicTableView, width:\(width)")
+            print("PeriodicTableView, height:\(height)")
+        }
     }
     
 }
@@ -82,7 +82,7 @@ fileprivate struct TitleSection : View {
                 .frame(maxWidth: .infinity, alignment: .center)
                 .dynamicTypeSize(.large ... .xxxLarge)
             
-            Spacer(minLength: 15)
+            Spacer(minLength: 5)
             Text("버튼을 클릭해 원자를 살펴보고, 도구를 이용해 분자를 만들어보세요")
                 .font(.system(size: width * 0.02, weight: .semibold))
                 .multilineTextAlignment(.center)
@@ -115,85 +115,23 @@ fileprivate struct ElementsGridView : View {
     }
     
     var body: some View {
-//        VStack(spacing: buttonSpacing) {
         Grid(horizontalSpacing: 20, verticalSpacing: 20) {
             ForEach(0..<elementsGrid.count, id: \.self) { row in
-//                HStack(spacing: buttonSpacing) {
                 GridRow {
-                    
-//                    ForEach(0..<elementsGrid[row].count, id: \.self) { col in
-//                        let symbol = elementsGrid[row][col]
-//                        makeElementCell(symbol: symbol)
-//                    }
                     ForEach(0..<elementsGrid[row].count, id: \.self) { col in
                         ElementGridCell(
                             symbol: elementsGrid[row][col],
                             width: width,
                             height: height,
-                            spawnAtom: spawnAtom // 함수를 클로저로 전달
+                            spawnAtom: spawnAtom,
+                            selectedAtom: $selectedAtom
                         )
                     }
-//                    ForEach(0..<elementsGrid[row].count, id: \.self) { col in
-////                        let element = elementsGrid[row][col]
-////                        let atomType = AtomType(from: element)
-//                        let symbol = elementsGrid[row][col]
-//                        let atomType = AtomType.from(symbol: symbol)
-//                        
-//                        if let atomType {
-//                            CustomButton(text: atomType.symbol, width: width, height: height) {
-////                                selectedAtom = element
-//                                spawnAtom(of: atomType)
-//                            }
-//                            .frame(width: width * 0.08, height: height * 0.1)
-//                        } else {     //빈 문자열("") → nil
-//                            Color.clear
-//                                .frame(width: width * 0.08, height: height * 0.1)
-//                        }
-//                    }
                 }
             }
         }
         Spacer(minLength: 70)
     }
-    
-//    @ViewBuilder
-//    private func makeElementCell(symbol: String) -> some View {
-//        let buttonWidth = width * 0.08
-//        let buttonHeight = height * 0.1
-//
-//        if let atomType = AtomType(from: symbol) {
-//            CustomButton(atom: atomType, width: width, height: height) {
-//                selectedAtom = DetailAtomMockData.find(bySymbol: symbol)
-//                spawnAtom(of: atomType)
-//            }
-//            .frame(width: buttonWidth, height: buttonHeight)
-//        } else {
-//            Color.clear
-//                .frame(width: buttonWidth, height: buttonHeight)
-//        }
-//    }
-    
-//    @ViewBuilder
-//    private func CustomButton(
-////        atom: AtomType,
-//        text: String,
-//        width: CGFloat,
-//        height: CGFloat,
-//        action: @escaping () -> Void
-//    ) -> some View {
-//        Button(action: action) {
-//            Text(text)
-//                .font(.system(size: width * 0.04, weight: .semibold))
-//                .foregroundStyle(.white.opacity(0.3))
-//                .frame(width: width * 0.08, height: height * 0.1)
-//                .background(
-//                    RoundedRectangle(cornerRadius: width * 0.02)
-//                        .fill(.white.opacity(0.3))
-//                )
-//        }
-//        .frame(width: width * 0.08, height: height * 0.1)
-//        .buttonStyle(.borderless)
-//    }
     
     // MARK: - Methods
     
@@ -230,24 +168,13 @@ fileprivate struct ElementsGridView : View {
 }
 
 
-//let detailAtomList = DetailAtomMockData.allDescriptions
-//
-//let detailAtomDict: [String: DetailAtomModel] = Dictionary(
-//    uniqueKeysWithValues: DetailAtomMockData.allDescriptions.map { ($0.symbol, $0) }
-//)
-//
-//let elementsGrid: [[DetailAtomModel?]] = symbolGrid.map { row in
-//    row.map { symbol in
-//        symbol.isEmpty ? nil : detailAtomDict[symbol]
-//    }
-//}
-
 // MARK: - 추출된 셀 뷰
 fileprivate struct ElementGridCell: View {
     let symbol: String
     let width: CGFloat
     let height: CGFloat
     let spawnAtom: (AtomType) -> Void // spawnAtom 함수를 전달하기 위한 클로저
+    @Binding var selectedAtom: DetailAtomModel?
     
     var body: some View {
         let buttonWidth = width * 0.08
@@ -255,6 +182,7 @@ fileprivate struct ElementGridCell: View {
         
         if let atomType = AtomType.from(symbol: symbol) {
             CustomButton(text: atomType.symbol, width: width, height: height) {
+                selectedAtom = DetailAtomMockData.find(bySymbol: symbol)
                 spawnAtom(atomType)
             }
             .frame(width: buttonWidth, height: buttonHeight)
