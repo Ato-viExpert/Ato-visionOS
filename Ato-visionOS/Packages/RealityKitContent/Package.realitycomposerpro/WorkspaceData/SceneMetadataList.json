@@ -3,20 +3,20 @@
     "objectMetadataList" : [
       [
         "02CC089A-191E-4D30-9FB0-B06F6BCCE81F",
-        "Root"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "02CC089A-191E-4D30-9FB0-B06F6BCCE81F",
         "Root",
         "SkySphere_1"
       ],
       {
         "disallowsFraming" : true,
         "isExpanded" : false,
+        "isLocked" : false
+      },
+      [
+        "02CC089A-191E-4D30-9FB0-B06F6BCCE81F",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
         "isLocked" : false
       }
     ]
@@ -47,6 +47,18 @@
       [
         "0373F6D0-9446-48D3-A7C4-2AE542F1AEFA",
         "root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "04B0EE15-3E92-4D78-BD50-B859EA9AA8DC" : {
+    "objectMetadataList" : [
+      [
+        "04B0EE15-3E92-4D78-BD50-B859EA9AA8DC",
+        "Root"
       ],
       {
         "isExpanded" : true,
@@ -226,6 +238,7 @@
         "im"
       ],
       {
+        "disallowsFraming" : true,
         "isExpanded" : true,
         "isLocked" : false
       }
@@ -589,7 +602,7 @@
       [
         "AF09ED6F-1707-48FD-8720-65B998362C09",
         "Root",
-        "Sphere_Right"
+        "Sphere_Left"
       ],
       {
         "isExpanded" : true,
@@ -598,7 +611,7 @@
       [
         "AF09ED6F-1707-48FD-8720-65B998362C09",
         "Root",
-        "Sphere_Left"
+        "Sphere_Right"
       ],
       {
         "isExpanded" : true,
@@ -729,32 +742,32 @@
       [
         "D1244F03-F15C-4A08-A6E3-6920574CAABF",
         "im",
-        "ChannelAudio2"
+        "ChannelAudio"
       ],
       {
         "isExpanded" : false,
         "isLocked" : false,
         "selectedAudioFilePrim" : {
-          "string" : "\/im\/New_Audio_File2"
+          "string" : "\/im\/New_Audio_File"
         }
       },
       [
         "D1244F03-F15C-4A08-A6E3-6920574CAABF",
-        "Root",
         "im",
-        "Light"
+        "SkySphere"
       ],
       {
-        "disallowsFraming" : false,
-        "isExpanded" : false,
+        "disallowsFraming" : true,
+        "isExpanded" : true,
         "isLocked" : false
       },
       [
         "D1244F03-F15C-4A08-A6E3-6920574CAABF",
-        "im",
-        "ChannelAudio"
+        "Root",
+        "DirectionalLight"
       ],
       {
+        "disallowsFraming" : false,
         "isExpanded" : false,
         "isLocked" : false,
         "selectedAudioFilePrim" : {
