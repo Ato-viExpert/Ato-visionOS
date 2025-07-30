@@ -273,7 +273,7 @@ final class MoleculeManager {
     
     /// 결합 불가능한 경우 처리
     /// - Returns: 에러처리
-    private func wrongChoice() -> Void {
-        print("결합 불가")
+    private func wrongChoice() {
+        NotificationCenter.default.post(name: .bondingFailed, object: nil, userInfo: ["message": "결합 불가"])
     }
 }
