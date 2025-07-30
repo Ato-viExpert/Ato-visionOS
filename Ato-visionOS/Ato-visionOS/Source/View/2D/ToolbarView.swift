@@ -17,7 +17,7 @@ struct ToolbarView: View {
 
     var body: some View {
 
-        HStack(spacing: width * 0.03) {
+        HStack(spacing: width * 0.02) {
             ForEach(Array(tools.enumerated()), id: \.1) { index, tool in
                 if index > 0 && tools[index - 1].group != tool.group {
                     Divider()
@@ -28,7 +28,7 @@ struct ToolbarView: View {
                     .frame(width: height * 0.05, height: height * 0.05)
             }
         }
-        .frame(width: max(width * 0.42, 610), height: max(height * 0.08, 65))
+        .frame(width: max(width * 0.42, 310), height: max(height * 0.08, 65))
         .bg()
         .clipShape(Capsule())
 
