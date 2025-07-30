@@ -13,7 +13,9 @@ struct Ato_visionOSApp: App {
     
     @State private var appModel = AppModel()
     @Environment(\.openImmersiveSpace) private var openImmersiveSpace
-    @Environment(\.openWindow) private var openWindow
+    @Environment(\.openWindow) private var openWindow    
+    @Environment(\.dismissWindow) private var dismissWindow
+    @Environment(\.dismissImmersiveSpace) private var dismissImmersiveSpace
     
     var body: some Scene {
         WindowGroup {
@@ -21,6 +23,15 @@ struct Ato_visionOSApp: App {
                 .environment(appModel)
                 .task {
                     openWindow(id: appModel.labID)
+                }
+                .onDisappear {
+                    // ContentView 윈도우가 닫히면 다른 모든 윈도우도 닫기
+                    dismissWindow(id: appModel.labID)
+                    Task {
+                        await dismissImmersiveSpace()
+                    }
+                    // 앱 종료
+                    exit(0)
                 }
         }
         .windowStyle(.plain)
