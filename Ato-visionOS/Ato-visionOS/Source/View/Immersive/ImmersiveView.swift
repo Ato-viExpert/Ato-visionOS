@@ -28,6 +28,14 @@ struct ImmersiveView: View {
             // 임머시브 콘텐츠 엔티티 로드
             if let immersiveContentEntity = try? await Entity(named: "FinalImmersive", in: realityKitContentBundle) {
                 content.add(immersiveContentEntity)
+                
+                guard let audioSource = try? await AudioFileResource(named: "/im/New_Audio_File", from: "FinalImmersive.usda", in: realityKitContentBundle) else { return }
+                let audioPlaybackController = immersiveContentEntity.prepareAudio(audioSource)
+                audioPlaybackController.play()
+                
+                guard let audioSource = try? await AudioFileResource(named: "/im/New_Audio_File2", from: "FinalImmersive.usda", in: realityKitContentBundle) else { return }
+                let audioPlaybackController2 = immersiveContentEntity.prepareAudio(audioSource)
+                audioPlaybackController2.play()
 
                 
                 // 탭 가능한 각 Entity에 대해 컴포넌트 추가
