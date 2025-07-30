@@ -10,7 +10,7 @@ struct WarningViewModifier: ViewModifier {
             content
             
             if isPresented {
-                Color.black.opacity(0.3)
+                Color.clear
                     .ignoresSafeArea()
                     .onTapGesture {
                         isPresented = false

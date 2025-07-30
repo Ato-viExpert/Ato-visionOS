@@ -15,6 +15,7 @@ struct LabView: View {
     
     @Environment(AppModel.self) private var appModel
     @State private var viewModel: LabViewModel
+    @State private var showWarning: Bool = false
     
     // MARK: - Init
     
@@ -31,6 +32,10 @@ struct LabView: View {
             appModel.realityContent = content
         } update: { content in
             setupEntities(in: content)
+        }
+        .warningWindow(isPresented: $showWarning)
+        .onReceive(NotificationCenter.default.publisher(for: .bondingFailed)) { _ in
+            showWarning = true
         }
         .onChange(of: appModel.toolChangeRequest) { _, newValue in
             guard let newTool = newValue else { return }

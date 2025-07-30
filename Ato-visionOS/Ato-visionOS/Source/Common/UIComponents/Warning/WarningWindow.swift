@@ -38,8 +38,13 @@ struct WarningView: View {
         .frame(width: 320)
         .background(
             RoundedRectangle(cornerRadius: 24)
-                .fill(.thinMaterial)
+                .fill(.ultraThinMaterial)
         )
+        .background(
+            RoundedRectangle(cornerRadius: 24)
+                .fill(.black.opacity(0.85))
+        )
+        
         .overlay(
             RoundedRectangle(cornerRadius: 24)
                 .stroke(.gray.opacity(0.2), lineWidth: 1)
