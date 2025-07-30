@@ -64,8 +64,8 @@ struct ElementDetailView: View {
             }
         }
         .padding()
-        .onChange(of: moleculeManager.selectedMolecule) { newValue in
-            if let selected = newValue {
+        .onChange(of: moleculeManager.selectedMolecule) {
+            if let selected = moleculeManager.selectedMolecule {
                 if let matched = allDescriptions.first(where: { $0.symbol == selected.compositionSymbol.subscripted }) {
                     print("✅ 일치하는 분자: \(matched.name)")
                     selectedMolecule = matched

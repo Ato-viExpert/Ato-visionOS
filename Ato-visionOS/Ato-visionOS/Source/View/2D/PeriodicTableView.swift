@@ -17,7 +17,6 @@ import RealityFoundation
 struct PeriodicTableView: View {
     
     // MARK: - Binding
-    
     @Binding var selectedAtom: DetailAtomModel?
     
     // MARK: - Properties
@@ -26,7 +25,6 @@ struct PeriodicTableView: View {
     
     
     // MARK: - Init
-    
     /// - Parameters:
     ///   - selectedElement: 상위에서 선택된 원소
     ///   - elementsGrid: 2차원 원소 배열(주기율표 데이터)
@@ -57,14 +55,7 @@ struct PeriodicTableView: View {
             TitleSection(width: width)
             ElementsGridView(width: width, height: height, selectedAtom: $selectedAtom)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding(width * 0.05)
-        .onAppear(){
-            print("PeriodicTableView, width:\(width)")
-            print("PeriodicTableView, height:\(height)")
-        }
     }
-    
 }
     // MARK: - Methods
 

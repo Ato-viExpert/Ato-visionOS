@@ -28,58 +28,31 @@ struct SplitPeriodicView: View {
             
             HStack(spacing: 10) {
                 // MARK: - 주기율표 뷰 (왼쪽)
-                
                 ZStack(alignment: .bottom) {
                     PeriodicTableView(
                         selectedAtom: $selectedAtom,
-//                        elementsGrid: elementsGrid,
                         width: width * 0.71,
                         height: height
                     )
                     .frame(width: width * 0.71, height: height)
+                    .padding(.trailing, width * 0.02)
                     .bg()
                     .clipShape(RoundedRectangle(cornerRadius: 55))
-                    
                     ToolbarView(width: width, height: height)
                         .offset(y: 30)
-//                        .frame(width: 300, height: 80)
-                    
                 }
                 
-                Spacer()
-                    .frame(width: width * 0.001)
-
+                ElementDetailView(
+                    elementDetail: $elementDetail,  // ← 바인딩 전달
+                    width: width * 0.28,
+                    height: height
+                )
                 // MARK: - 상세 정보 뷰 (오른쪽)
-                Group{
-                    if elementDetail != nil {
-                        ElementDetailView(
-                            elementDetail: $elementDetail,  // ← 바인딩 전달
-                            width: width * 0.28,
-                            height: height
-                        )
-                    } else {
-                        VStack {
-                            Spacer()
-                            Text("원소를 선택해주세요.")
-                                .font(
-                                    Font.custom("SF Pro Display", size: width * 0.02)
-                                        .weight(.bold)
-                                )
-                                .multilineTextAlignment(.center)
-                                .foregroundStyle(.white.opacity(0.2))
-                            Spacer()
-                        }
-                        .frame(width: width * 0.28, height: height)
-                        .bg()
-                        .clipShape(RoundedRectangle(cornerRadius: 55))
-                    }
-                }
                 .frame(width: width * 0.28, height: height)
                 .bg()
                 .clipShape(RoundedRectangle(cornerRadius: 55))
             }
-            .padding(.bottom, 40)
-            .onChange(of: selectedAtom) { 
+            .onChange(of: selectedAtom) {
                 if let atom = selectedAtom {
                     elementDetail = .atom(atom)
                     selectedMolecule = nil  // 분자 선택 초기화
@@ -92,13 +65,5 @@ struct SplitPeriodicView: View {
                 }
             }
         }
-    }
-}
-
-
-struct SplitViewWindowSizeKey: PreferenceKey {
-    static var defaultValue: CGSize = .zero
-    static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
-        value = nextValue()
     }
 }

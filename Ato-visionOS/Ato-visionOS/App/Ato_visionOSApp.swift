@@ -18,7 +18,6 @@ struct Ato_visionOSApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-//                .frame(minWidth: 1300, minHeight: 700)
                 .environment(appModel)
                 .task {
                     openWindow(id: appModel.labID)
