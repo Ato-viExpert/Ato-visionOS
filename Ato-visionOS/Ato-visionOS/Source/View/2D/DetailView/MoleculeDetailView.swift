@@ -17,12 +17,10 @@ struct MoleculeDetailView: View {
         VStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 30) {
                 Text("\(molecule.symbol)(\(molecule.name))")
-                    .font(Font.custom("SF Pro Display", size: width * 0.08)
-                        .weight(.bold)
-                    )
+                    .font(.system(size: width * 0.08, weight: .bold, design: .default))
                     .multilineTextAlignment(.leading)
                     .foregroundStyle(.white)
-                
+                    .padding(20)
                 Divider()
                     .background(.white.opacity(0.4))
                     .frame(width: width * 0.66)
