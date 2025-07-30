@@ -11,6 +11,7 @@ import RealityKitContent
 
 struct ImmersiveView: View {
     @Environment(\.openWindow) private var openWindow
+    @Environment(AppModel.self) private var appModel
     
     let tappableEntityNames: [String] = [
         "game_ready_free_chocolates",
@@ -36,7 +37,7 @@ struct ImmersiveView: View {
                 guard let audioSource = try? await AudioFileResource(named: "/im/New_Audio_File2", from: "FinalImmersive.usda", in: realityKitContentBundle) else { return }
                 let audioPlaybackController2 = immersiveContentEntity.prepareAudio(audioSource)
                 audioPlaybackController2.play()
-
+                
                 
                 // 탭 가능한 각 Entity에 대해 컴포넌트 추가
                 for entityName in tappableEntityNames {
@@ -47,7 +48,7 @@ struct ImmersiveView: View {
                         if !entity.components.has(HoverEffectComponent.self) {
                             entity.components.set(HoverEffectComponent())
                         }
-
+                        
                         // MARK: - InputTargetComponent 및 CollisionComponent 추가
                         // 탭 제스처 및 호버 효과를 위해 InputTargetComponent는 필수입니다.
                         if !entity.components.has(InputTargetComponent.self) {
@@ -76,11 +77,25 @@ struct ImmersiveView: View {
             TapGesture()
                 .targetedToAnyEntity()
                 .onEnded { value in
-
-                        print("✅ 클릭됨")
+                    let tappedEntity = value.entity
+                    print("✅ 클릭됨: \(tappedEntity.name)")
+                    
+                    switch tappedEntity.name {
+                    case "free_low_poly_mining_assets":
+                        spawnAtom(of: .C)
+                    default:
+                        break
+                    }
                 }
         )
-
+    }
+    
+    private func spawnAtom(of type: AtomType) {
+        guard let content = appModel.realityContent else { return }
+        let command = SpawnAtomCommand(atomType: type, atomManager: appModel.atomManager)
+        Task {
+            let _ = await appModel.commandManager.execute(command, in: content)
+        }
     }
 }
 
@@ -88,3 +103,5 @@ struct ImmersiveView: View {
     ImmersiveView()
         .environment(AppModel())
 }
+
+
