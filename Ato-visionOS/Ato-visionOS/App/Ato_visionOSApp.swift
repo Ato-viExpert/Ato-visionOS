@@ -25,13 +25,7 @@ struct Ato_visionOSApp: App {
                     openWindow(id: appModel.labID)
                 }
                 .onDisappear {
-                    // ContentView 윈도우가 닫히면 다른 모든 윈도우도 닫기
-                    dismissWindow(id: appModel.labID)
-                    Task {
-                        await dismissImmersiveSpace()
-                    }
-                    // 앱 종료
-                    exit(0)
+                    terminateApp()
                 }
         }
         .windowStyle(.plain)
@@ -39,6 +33,9 @@ struct Ato_visionOSApp: App {
         WindowGroup(id: appModel.labID) {
             LabView(viewModel: LabViewModel())
                 .environment(appModel)
+                .onDisappear {
+                    terminateApp()
+                }
         }
         .windowStyle(.volumetric)
 
@@ -53,5 +50,16 @@ struct Ato_visionOSApp: App {
             }
         }
         .immersionStyle(selection: .constant(.full), in: .full)
+    }
+
+    // MARK: - 앱 종료 함수
+    private func terminateApp() {
+        // 모든 윈도우와 Immersive Space 닫기
+        dismissWindow(id: appModel.labID)
+        Task {
+            await dismissImmersiveSpace()
+        }
+        // 앱 완전 종료
+        exit(0)
     }
 }
