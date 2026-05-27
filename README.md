@@ -1,4 +1,6 @@
 # Ato-visionOS
+<img width="1080" height="6208" alt="image" src="https://github.com/user-attachments/assets/dcc1e32e-04fc-4c19-bf18-ae11e111d868" />
+
 ## 👦🏻 **Persona**
 **환경, 맥락**: User goal과 관련해 유저가 처한 상황이나 환경, 조건 등이 있나요?
   1. 다음 주에 학교 시험을 앞두고 있다
